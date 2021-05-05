@@ -63,10 +63,22 @@ del /s /q /f $(IntDir)\*.oelf</NMakeCleanCommandLine>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="lib.cpp" />
+    <ClCompile Include="Custom_Content.cpp" />
+    <ClCompile Include="DebugTitleIdLabel.cpp" />
+    <ClCompile Include="Detour.cpp" />
+    <ClCompile Include="DevkitPanel.cpp" />
+    <ClCompile Include="Mono.cpp" />
+    <ClCompile Include="MonoTest.cpp" />
+    <ClCompile Include="UI_Utilities.cpp" />
+    <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lib.h" />
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="Detour.h" />
+    <ClInclude Include="Mono.h" />
+    <ClInclude Include="MonoTest.h" />
+    <ClInclude Include="UI.h" />
+    <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="build.bat" />

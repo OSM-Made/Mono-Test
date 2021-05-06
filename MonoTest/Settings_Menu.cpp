@@ -59,6 +59,7 @@ void Settings_Menu::OnCheckVisible_Hook(MonoObject* Instance, MonoObject* elemen
 		if (!strcmp(Id, "id_message"))
 			Mono::Set_Property(SettingElement, "Visible", element, false);
 	}
+	Detour_OnCheckVisible->Stub<void>(Instance, element, e);
 	//    klog("OnVisible: %s\n", mono_string_to_utf8(Mono::Get_Property<MonoString*>(Mono::Get_Class(App_exe, "Sce.Vsh.ShellUI.Settings.Core", "SettingElement"), "Id", element)));
 
 	//Detour_OnCheckVisible->Stub<void>(Instance, element, e);
@@ -84,8 +85,8 @@ void Settings_Menu::OnPreCreate_Hook(MonoObject* Instance, MonoObject* element, 
 			Mono::Set_Property(SettingElement, "Value", element, UI::Custom_Content::Show_Debug_Settings ? Mono::New_String("1") : Mono::New_String("0"));
 		else if (!strcmp(Id, "id_system_disp_app_home_panel"))
 			Mono::Set_Property(SettingElement, "Value", element, UI::Custom_Content::Show_App_Home ? Mono::New_String("1") : Mono::New_String("0"));
-
 	}
+	Detour_OnPreCreate->Stub<void>(Instance, element, e);
 }
 
 void ResetMenuItem(const char* Menu)
@@ -137,6 +138,7 @@ void Settings_Menu::OnPageActivating_Hook(MonoObject* Instance, MonoObject* page
 			ResetMenuItem("id_message");
 		}
 	}
+	Detour_OnPageActivating->Stub<void>(Instance, page, e);
 }
 
 void Settings_Menu::OnPress_Hook(MonoObject* Instance, MonoObject* element, MonoObject* e)
@@ -180,6 +182,8 @@ void Settings_Menu::OnPress_Hook(MonoObject* Instance, MonoObject* element, Mono
 			UI::Utilities::ReloadItemList();
 		}
 	}
+
+	Detour_OnPress->Stub<void>(Instance, element, e);
 }
 
 void Settings_Menu::Log(const char* fmt, ...)
@@ -217,10 +221,10 @@ void Settings_Menu::Init()
 	//TODO: Update instruction counts and call stubs
 	Log("Detour Methods");
 	Detour_GetManifestResourceStream->DetourMethod(Mono::mscorlib, "System.Reflection", "Assembly", "GetManifestResourceStream", 1, (void*)GetManifestResourceStream_Hook, 17);
-	Detour_OnCheckVisible->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnCheckVisible", 2, (void*)OnCheckVisible_Hook, 17);
-	Detour_OnPreCreate->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnPreCreate", 2, (void*)OnPreCreate_Hook, 17);
-	Detour_OnPageActivating->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnPageActivating", 2, (void*)OnPageActivating_Hook, 17);
-	Detour_OnPress->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnPress", 2, (void*)OnPress_Hook, 17);
+	Detour_OnCheckVisible->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnCheckVisible", 2, (void*)OnCheckVisible_Hook, 16);
+	Detour_OnPreCreate->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnPreCreate", 2, (void*)OnPreCreate_Hook, 14);
+	Detour_OnPageActivating->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnPageActivating", 2, (void*)OnPageActivating_Hook, 14);
+	Detour_OnPress->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnPress", 2, (void*)OnPress_Hook, 15);
 
 	//Debug Settings Patch
 	Patch_IsDevkit = new Patcher();

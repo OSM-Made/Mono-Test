@@ -69,7 +69,7 @@ void UI::DebugTitleIdLabel::RemoveTitleId(MonoObject* m_contentsGridList)
 					if (strcmp(Instance->vtable->klass->name, "Label"))
 						continue;
 
-					Mono::Invoke(Mono::App_exe, Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Widget"), Instance, "RemoveFromParent");
+					Mono::Invoke<void>(Mono::App_exe, Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Widget"), Instance, "RemoveFromParent");
 				}
 			}
 		}

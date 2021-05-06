@@ -25,9 +25,21 @@
     <Filter Include="Source Files\UI">
       <UniqueIdentifier>{331d705b-7702-4cb1-914e-177ef5d933f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\XML">
+      <UniqueIdentifier>{90972c4f-91c9-4f02-b256-6f6508ba5b64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Menu">
+      <UniqueIdentifier>{13afcc92-d67f-4779-8f5e-024305c3d1c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Menu">
+      <UniqueIdentifier>{2ba1b94e-2edd-4284-84f3-c4b7873b29b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="build.bat" />
+    <None Include="Embed.s">
+      <Filter>Source Files\XML</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MonoTest.cpp">
@@ -54,6 +66,9 @@
     <ClCompile Include="Custom_Content.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Settings_Menu.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MonoTest.h">
@@ -74,5 +89,19 @@
     <ClInclude Include="Detour.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="Settings_Menu.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="settings_root.xml">
+      <Filter>Source Files\XML</Filter>
+    </Xml>
+    <Xml Include="external_hdd.xml">
+      <Filter>Source Files\XML</Filter>
+    </Xml>
+    <Xml Include="test_menu.xml">
+      <Filter>Source Files\XML</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

@@ -69,6 +69,7 @@ del /s /q /f $(IntDir)\*.oelf</NMakeCleanCommandLine>
     <ClCompile Include="DevkitPanel.cpp" />
     <ClCompile Include="Mono.cpp" />
     <ClCompile Include="MonoTest.cpp" />
+    <ClCompile Include="Settings_Menu.cpp" />
     <ClCompile Include="UI_Utilities.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
@@ -77,11 +78,18 @@ del /s /q /f $(IntDir)\*.oelf</NMakeCleanCommandLine>
     <ClInclude Include="Detour.h" />
     <ClInclude Include="Mono.h" />
     <ClInclude Include="MonoTest.h" />
+    <ClInclude Include="Settings_Menu.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="build.bat" />
+    <None Include="Embed.s" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="external_hdd.xml" />
+    <Xml Include="settings_root.xml" />
+    <Xml Include="test_menu.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

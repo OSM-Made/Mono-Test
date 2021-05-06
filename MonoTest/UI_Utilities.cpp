@@ -17,7 +17,7 @@ void UI::Utilities::ReloadItemList()
 	MonoObject* m_contentsList_0 = mono_array_get(m_contentsList, MonoObject*, 0);
 
 	if (m_contentsList_0)
-		Mono::Invoke(Mono::App_exe, ContentsList, m_contentsList_0, "ReloadItemSource");
+		Mono::Invoke<void>(Mono::App_exe, ContentsList, m_contentsList_0, "ReloadItemSource");
 }
 
 MonoObject* UI::Utilities::NewAppBrowseItem(const char* TitleId, const char* TitleName)

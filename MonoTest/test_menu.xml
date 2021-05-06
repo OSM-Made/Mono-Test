@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<system_settings version="1.0" plugin="settings_root_plugin">
+
+  <!-- ★Test Menu -->
+  <setting_list id="id_test_menu" title="★Debug Settings v2" initial_focus_to="id_game_package_installer">
+    <!-- Package Installer -->
+    <link id="id_game_package_installer" title="Package Installer" icon="https://i.imgur.com/NeY8pk7.png" file="PkgInstaller/data/pkginstaller.xml" />
+
+    <setting_list id="system_settings" title="System Settings" icon="https://i.imgur.com/hqJAWXq.png" initial_focus_to="id_licenseactivation">
+      <!-- License Activation -->
+      <link id="id_licenseactivation" title="License Activation" file="DebugSettings/data/debug_settings_licenseactivation.xml" />
+
+      <!-- External HDD -->
+      <link id="id_external_hdd" title="External HDD" file="external_hdd.xml" />
+
+      <!-- NP Debug -->
+      <toggle_switch id="id_np_debug" title="NP Debug" key="/NP/debug"/>
+
+      <!-- Display Title ID on Home Screen -->
+      <toggle_switch id="id_system_disp_titleid" title="Display Title ID on Home Screen" value="0"/>
+
+      <!-- Display Title ID on Home Screen -->
+      <toggle_switch id="id_system_disp_devkit_panel" title="Display Devkit Panel on Home Screen" value="0"/>
+
+      <!-- Display ★Debug Settings on Home Screen -->
+      <toggle_switch id="id_system_disp_debug_settings_panel" title="Display ★Debug Settings on Home Screen" value="0"/>
+
+      <!-- Display ★APP_HOME on Home Screen -->
+      <toggle_switch id="id_system_disp_app_home_panel" title="Display ★APP_HOME on Home Screen" value="0"/>
+
+    </setting_list>
+
+    <setting_list id="id_payloads" title="Payload Loader" icon="https://i.imgur.com/JwM4MeX.png" restorable="false">
+      <message id="id_message" title="msg_wait" busyindicator="true"/>
+    </setting_list>
+
+    <button id="id_Test" title="Test Button" value="0"/>
+
+    <!-- Enable Debug Settings -->
+    <!-- <toggle_switch id="id_enable_debug_settings" title="Enable ★Debug Settings" value="0"/> -->
+
+    <!-- <button id="id_Test" title="Test Button" value="0"/>
+        <list id="id_Test_Bool" title="Test Bool">
+            <list_item id="id_Test_Bool_off" title="Off" value="0"/>
+            <list_item id="id_Test_Bool_on" title="On" value="1"/>
+        </list>
+        <list id="id_Test_List" title="Test List" value="Something" >
+            <list_item id="id_Test_List_1" title="Something" value="Something"/>
+            <list_item id="id_Test_List_2" title="Something else" value="Something else"/>
+            <list_item id="id_Test_List_3" title="another thing" value="another thing"/>
+        </list>
+
+        <toggle_switch id="id_Test_Switch" title="Test Switch"/>
+
+        
+		<spacer id="-1-" height="20"/>
+		<label id="name" title="Title" raw_title="false" border="true"/>
+		<spacer id="-2-" height="20"/>
+        <label id="info1" title="label" style="left"/>
+        <toggle_switch id="id_Test_Switch_1" title="Test Switch 2"/>
+
+        <text_field id="id_Test_Text_Field" title="Test Text Field"
+                keyboard_type="default" max_length="511" value_max_width="750"/>
+
+        <text_field id="id_Test_Text_Field_Status" title="Test Text Field Status"
+                keyboard_type="default" max_length="511" value_max_width="750" style="status_display"/>
+        
+        <label id="label_status" title="Status Display" style="status_display"/>
+
+        <navi id="_navi">
+			<navi_button id="cancel" title="cancel" layout="negative"/>
+			<navi_button id="confirm" title="confirm" layout="positive"/>
+		</navi>-->
+
+  </setting_list>
+
+</system_settings>

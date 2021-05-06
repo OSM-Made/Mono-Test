@@ -19,7 +19,7 @@ void klog(const char* fmt, ...)
 	vsprintf(Buffer, fmt, args);
 	va_end(args);
 
-	syscall(601, 7, Buffer, 0);
+	sceKernelDebugOutText(0, Buffer);
 }
 
 void Notify(const char* MessageFMT, ...)

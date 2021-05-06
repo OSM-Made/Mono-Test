@@ -35,7 +35,12 @@ void* Detour::DetourFunction(uint64_t FunctionPtr, void* HookPtr, int32_t Instru
 
 	//Allocate Executable memory for stub and write instructions to stub and a jump back to original execution.
 	this->StubSize = (InstructionSize + 14);
-	sceKernelMmap(0, this->StubSize, VM_PROT_ALL, 0x1000 | 0x2, -1, 0, &this->StubPtr);
+	int res = sceKernelMmap(0, this->StubSize, VM_PROT_ALL, 0x1000 | 0x2, -1, 0, &this->StubPtr);
+	if (res < 0)
+	{
+		klog("[Detour] sceKernelMmap Failed: 0x%llX\n", res);
+		return 0;
+	}
 	memcpy(StubPtr, (void*)FunctionPtr, InstructionSize);
 	WriteJump((void*)((uint64_t)StubPtr + InstructionSize), (void*)(FunctionPtr + InstructionSize));
 

@@ -36,12 +36,12 @@ void UI::DevkitPanel::Show()
 		// AreaManager.Instance.m_updatePanelTimer.Start()
 		// If the m_updatePanelTimer is initialized start the timer.
 		if (m_updatePanelTimer)
-			Mono::Invoke(Mono::Highlevel_UI2, UITimer, m_updatePanelTimer, "Start");
+			Mono::Invoke<void>(Mono::Highlevel_UI2, UITimer, m_updatePanelTimer, "Start");
 
 		// AreaManager.Instance.m_devKitPanel.Show()
 		// Show the panel.
 		MonoClass* UINode = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "UINode");
-		Mono::Invoke(Mono::Highlevel_UI2, UINode, m_devKitPanel, "Show");
+		Mono::Invoke<void>(Mono::Highlevel_UI2, UINode, m_devKitPanel, "Show");
 	}
 
 	ShowPanel = true;
@@ -58,7 +58,7 @@ void UI::DevkitPanel::Hide()
 	// AreaManager.Instance.m_updatePanelTimer.Stop()
 	// If the m_updatePanelTimer is initialized stop the timer.
 	if (m_updatePanelTimer)
-		Mono::Invoke(Mono::Highlevel_UI2, UITimer, m_updatePanelTimer, "Stop");
+		Mono::Invoke<void>(Mono::Highlevel_UI2, UITimer, m_updatePanelTimer, "Stop");
 
 	// AreaManager.Instance.m_devKitPanel.Hide()
 	// Hide the panel.
@@ -66,7 +66,7 @@ void UI::DevkitPanel::Hide()
 	if (m_devKitPanel)
 	{
 		MonoClass* UINode = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "UINode");
-		Mono::Invoke(Mono::Highlevel_UI2, UINode, m_devKitPanel, "Hide");
+		Mono::Invoke<void>(Mono::Highlevel_UI2, UINode, m_devKitPanel, "Hide");
 	}
 
 	ShowPanel = false;

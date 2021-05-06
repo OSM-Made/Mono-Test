@@ -38,7 +38,7 @@ public:
 	static uint64_t Get_Address_of_Method(MonoImage* Assembly_Image, const char* Name_Space, const char* Class_Name, const char* Method_Name, int Param_Count);
 	static uint64_t Get_Address_of_Method(MonoImage* Assembly_Image, MonoClass* klass, const char* Method_Name, int Param_Count);
 
-	template <typename... Args>
+	/*template <typename... Args>
 	static void Invoke(MonoImage* Assembly_Image, MonoClass* klass, MonoObject* Instance, const char* Method_Name, Args... args)
 	{
 		void* Argsv[] = { &args... };
@@ -60,7 +60,7 @@ public:
 			void(*Method)(Args... args) = decltype(Method)(ThunkAddress);
 			Method(args...);
 		}
-	}
+	}*/
 
 	template <typename result, typename... Args>
 	static result Invoke(MonoImage* Assembly_Image, MonoClass* klass, MonoObject* Instance, const char* Method_Name, Args... args)

@@ -45,7 +45,7 @@ void Mono::MonoLog(const char* fmt, ...)
 	char Message[0x200];
 	sprintf(Message, "[Mono] %s\n", va_Buffer);
 
-	syscall(601, 7, Message, 0);
+	sceKernelDebugOutText(0, va_Buffer);
 }
 
 MonoImage* Mono::GetImage(const char* Assembly_Name, ...)

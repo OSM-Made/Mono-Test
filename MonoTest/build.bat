@@ -1,7 +1,7 @@
 SETLOCAL EnableDelayedExpansion
 
 Rem Libraries to link in
-set libraries=-lc -lSceLibcInternal -lSceLibcInternalExt -lkernel -lmonosgen
+set libraries=-lSceLibcInternal -lSceLibcInternalExt -lkernel -lmonosgen
 
 Rem Read the script arguments into local vars
 set intdir=%1
@@ -16,6 +16,11 @@ set outputStub=%intdir%%targetname%_stub.so
 Rem Compile object files for all the source files
 for %%f in (*.cpp) do (
     clang++ -cc1 -triple x86_64-scei-ps4-elf -munwind-tables -I"%OO_PS4_TOOLCHAIN%\include" -I"%OO_PS4_TOOLCHAIN%\\include\\c++\\v1" -emit-obj -o %intdir%\%%~nf.o %%~nf.cpp
+)
+
+Rem Compile object files for all the assembly files
+for %%f in (*.s) do (
+	clang -m64 -nodefaultlibs -nostdlib --target=x86_64-scei-ps4-elf -c -o %intdir%\%%~nf.o %%~nf.s
 )
 
 Rem Get a list of object files for linking

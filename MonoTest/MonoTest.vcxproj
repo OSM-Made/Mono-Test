@@ -69,6 +69,7 @@ del /s /q /f $(IntDir)\*.oelf</NMakeCleanCommandLine>
     <ClCompile Include="DevkitPanel.cpp" />
     <ClCompile Include="Mono.cpp" />
     <ClCompile Include="MonoTest.cpp" />
+    <ClCompile Include="Patcher.cpp" />
     <ClCompile Include="Settings_Menu.cpp" />
     <ClCompile Include="UI_Utilities.cpp" />
     <ClCompile Include="Utilities.cpp" />
@@ -78,6 +79,7 @@ del /s /q /f $(IntDir)\*.oelf</NMakeCleanCommandLine>
     <ClInclude Include="Detour.h" />
     <ClInclude Include="Mono.h" />
     <ClInclude Include="MonoTest.h" />
+    <ClInclude Include="Patcher.h" />
     <ClInclude Include="Settings_Menu.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Utilities.h" />

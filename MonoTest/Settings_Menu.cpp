@@ -18,6 +18,10 @@ Detour* Settings_Menu::Detour_OnPreCreate = nullptr;
 Detour* Settings_Menu::Detour_OnPageActivating = nullptr;
 Detour* Settings_Menu::Detour_OnPress = nullptr;
 
+//Patches
+Patcher* Settings_Menu::Patch_IsDevkit;
+Patcher* Settings_Menu::Patch_AllowDebugMenu;
+
 MonoObject* New_MemoryStream(void* Buffer, int Buffer_Size)
 {
 	MonoArray* Array = Mono::New_Array(mono_get_byte_class(), Buffer_Size);
@@ -178,7 +182,7 @@ void Settings_Menu::OnPress_Hook(MonoObject* Instance, MonoObject* element, Mono
 	}
 }
 
-void Settings_Menu::Log(char* fmt, ...)
+void Settings_Menu::Log(const char* fmt, ...)
 {
 	char va_Buffer[0x200];
 
@@ -196,11 +200,14 @@ void Settings_Menu::Log(char* fmt, ...)
 
 void Settings_Menu::Init()
 {
+	Log("Init");
+
 	UI::DevkitPanel::Init();
 	UI::DebugTitleIdLabel::Init();
 	UI::Custom_Content::Init();
 
 	//Detours
+	Log("Init Detours");
 	Detour_GetManifestResourceStream = new Detour();
 	Detour_OnCheckVisible = new Detour();
 	Detour_OnPreCreate = new Detour();
@@ -208,6 +215,7 @@ void Settings_Menu::Init()
 	Detour_OnPress = new Detour();
 
 	//TODO: Update instruction counts and call stubs
+	Log("Detour Methods");
 	Detour_GetManifestResourceStream->DetourMethod(Mono::mscorlib, "System.Reflection", "Assembly", "GetManifestResourceStream", 1, (void*)GetManifestResourceStream_Hook, 17);
 	Detour_OnCheckVisible->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnCheckVisible", 2, (void*)OnCheckVisible_Hook, 17);
 	Detour_OnPreCreate->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnPreCreate", 2, (void*)OnPreCreate_Hook, 17);
@@ -215,13 +223,14 @@ void Settings_Menu::Init()
 	Detour_OnPress->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnPress", 2, (void*)OnPress_Hook, 17);
 
 	//Debug Settings Patch
-	/*uint64_t IsDevKit_addr = Mono::Get_Address_of_Method(Mono::KernelSysWrapper, "Sce.Vsh", "KernelSysWrapper", "IsDevKit", 0);
-	sceKernelMprotect((void*)IsDevKit_addr, 8, VM_PROT_ALL);
-	memcpy((void*)IsDevKit_addr, "\x48\xc7\xc0\x01\x00\x00\x00\xC3", 8);
+	Patch_IsDevkit = new Patcher();
+	Patch_AllowDebugMenu = new Patcher();
 
-	uint64_t SblRcMgrIsAllowDebugMenuForSettings_addr = Mono::Get_Address_of_Method(Mono::platform_dll, "Sce.Vsh.ShellUI.Settings.Sbl", "SblWrapper", "SblRcMgrIsAllowDebugMenuForSettings", 0);
-	sceKernelMprotect((void*)SblRcMgrIsAllowDebugMenuForSettings_addr, 8, VM_PROT_ALL);
-	memcpy((void*)SblRcMgrIsAllowDebugMenuForSettings_addr, "\x48\xc7\xc0\x01\x00\x00\x00\xC3", 8);*/
+	Log("Install Patches");
+	Patch_IsDevkit->Install_Method_Patch(Mono::KernelSysWrapper, "Sce.Vsh", "KernelSysWrapper", "IsDevKit", 0, 0, "\x48\xc7\xc0\x01\x00\x00\x00\xC3", 8);
+	Patch_AllowDebugMenu->Install_Method_Patch(Mono::platform_dll, "Sce.Vsh.ShellUI.Settings.Sbl", "SblWrapper", "SblRcMgrIsAllowDebugMenuForSettings", 0, 0, "\x48\xc7\xc0\x01\x00\x00\x00\xC3", 8);
+
+	Log("Init Complete");
 }
 
 void Settings_Menu::Term()
@@ -231,6 +240,8 @@ void Settings_Menu::Term()
 	UI::Custom_Content::Term();
 
 	//Remove Denug Settings Patch
+	delete Patch_IsDevkit;
+	delete Patch_AllowDebugMenu;
 
 	//Clean up detours
 	delete Detour_GetManifestResourceStream;

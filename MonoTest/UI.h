@@ -11,7 +11,6 @@ public:
 		static Detour* Detour_StartDebugSettings;
 		static Detour* Detour_GetIconPath;
 
-		static MonoObject* NewAppBrowseItem_Hook(const char* TitleId, const char* TitleName);
 		static MonoObject* ExecuteSelectQuery_Hook(MonoObject* Instance, int offset, int limit);
 		static int ExecuteCountQuery_Hook(MonoObject* Instance);
 		static void StartDebugSettings_Hook(MonoObject* Instance);
@@ -31,6 +30,8 @@ public:
 		static void(*CreateDebugTitleIdLabel)(MonoObject* Instance);
 		static Detour* Detour_ContentDecoratorBase_Constructor;
 		static uint64_t ContentDecoratorBase_Constructor_Hook(MonoObject* Instance, uint64_t param);
+
+		static Patcher* Patch_createDevKitPanel;
 
 		static void AddTitleId(MonoObject* m_contentsGridList);
 		static void RemoveTitleId(MonoObject* m_contentsGridList);

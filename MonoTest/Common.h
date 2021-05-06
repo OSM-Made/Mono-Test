@@ -16,4 +16,5 @@
 #include "Utilities.h"
 #include "Mono.h"
 #include "Detour.h"
+#include "Patcher.h"
 #include "UI.h"

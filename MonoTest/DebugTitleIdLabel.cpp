@@ -2,7 +2,9 @@
 #include "UI.h"
 
 void(*UI::DebugTitleIdLabel::CreateDebugTitleIdLabel)(MonoObject* Instance);
-Detour* UI::DebugTitleIdLabel::Detour_ContentDecoratorBase_Constructor;
+Detour* UI::DebugTitleIdLabel::Detour_ContentDecoratorBase_Constructor = nullptr;
+
+Patcher* UI::DebugTitleIdLabel::Patch_createDevKitPanel = nullptr;
 
 bool UI::DebugTitleIdLabel::ShowLabels = false;
 
@@ -106,8 +108,8 @@ void UI::DebugTitleIdLabel::Init()
 	CreateDebugTitleIdLabel = decltype(CreateDebugTitleIdLabel)(CreateDebugTitleIdLabel_addr);
 
 	//Patch RegMgr Check 
-	sceKernelMprotect((void*)(CreateDebugTitleIdLabel_addr + 0x2C), 0x20, VM_PROT_ALL);
-	memcpy((void*)(CreateDebugTitleIdLabel_addr + 0x2C), "\x90\x90\x90\x90\x90\x90", 6);
+	Patch_createDevKitPanel = new Patcher();
+	Patch_createDevKitPanel->Install_Method_Patch(Mono::App_exe, "Sce.Vsh.ShellUI.Library", "ContentDecoratorBase", "CreateDebugTitleIdLabel", 0, 0x2C, "\x90\x90\x90\x90\x90\x90", 6);
 
 	Detour_ContentDecoratorBase_Constructor = new Detour();
 	Detour_ContentDecoratorBase_Constructor->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Library", "ContentDecoratorBase", ".ctor", 1, (void*)ContentDecoratorBase_Constructor_Hook, 15);
@@ -115,5 +117,9 @@ void UI::DebugTitleIdLabel::Init()
 
 void UI::DebugTitleIdLabel::Term()
 {
+	//Clean up Patches
+	delete Patch_createDevKitPanel;
+
+	//Clean up Detours
 	delete Detour_ContentDecoratorBase_Constructor;
 }

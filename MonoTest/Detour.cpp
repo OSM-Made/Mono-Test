@@ -19,7 +19,7 @@ void* Detour::DetourFunction(uint64_t FunctionPtr, void* HookPtr, int32_t Instru
 {
 	if (FunctionPtr == NULL || HookPtr == NULL)
 	{
-		klog("[Detour] DetourFunction: FunctionPtr or HookPtr NULL (%llX %llX)\n", FunctionPtr, HookPtr);
+		klog("[Detour] DetourFunction: FunctionPtr or HookPtr NULL (%llX -> %llX)\n", FunctionPtr, HookPtr);
 		return (void*)0;
 	}
 
@@ -33,21 +33,25 @@ void* Detour::DetourFunction(uint64_t FunctionPtr, void* HookPtr, int32_t Instru
 	this->FunctionPtr = (void*)FunctionPtr;
 	this->HookPtr = HookPtr;
 
+	//Set protection.
+	sceKernelMprotect((void*)FunctionPtr, InstructionSize, VM_PROT_ALL);
+
 	//Allocate Executable memory for stub and write instructions to stub and a jump back to original execution.
 	this->StubSize = (InstructionSize + 14);
 	int res = sceKernelMmap(0, this->StubSize, VM_PROT_ALL, 0x1000 | 0x2, -1, 0, &this->StubPtr);
-	if (res < 0)
+	if (res < 0 || this->StubPtr == 0)
 	{
 		klog("[Detour] sceKernelMmap Failed: 0x%llX\n", res);
 		return 0;
 	}
+
 	memcpy(StubPtr, (void*)FunctionPtr, InstructionSize);
 	WriteJump((void*)((uint64_t)StubPtr + InstructionSize), (void*)(FunctionPtr + InstructionSize));
 
 	//Write jump from function to hook.
 	WriteJump((void*)FunctionPtr, HookPtr);
 
-	klog("[Detour] DetourFunction: Detour (%llX %llX) Written Successfully!\n", FunctionPtr, this->HookPtr);
+	klog("[Detour] DetourFunction: Detour (%llX -> %llX) Written Successfully!\n", FunctionPtr, this->HookPtr);
 
 	return this->StubPtr;
 }
@@ -87,6 +91,4 @@ Detour::~Detour()
 
 	//Clean up
 	sceKernelMunmap(this->StubPtr, this->StubSize);
-
-	klog("[Detour] (%llX) has been Removed Successfully!\n", this->FunctionPtr);
 }

@@ -17,7 +17,7 @@ public:
 
 	static bool Init();
 	static void MonoLog(const char* fmt, ...);
-	static MonoImage* GetImage(const char* MonoAssembly, ...);
+	static MonoImage* Get_Image(const char* MonoAssembly, ...);
 
 	//
 	// Classes
@@ -37,30 +37,6 @@ public:
 	//
 	static uint64_t Get_Address_of_Method(MonoImage* Assembly_Image, const char* Name_Space, const char* Class_Name, const char* Method_Name, int Param_Count);
 	static uint64_t Get_Address_of_Method(MonoImage* Assembly_Image, MonoClass* klass, const char* Method_Name, int Param_Count);
-
-	/*template <typename... Args>
-	static void Invoke(MonoImage* Assembly_Image, MonoClass* klass, MonoObject* Instance, const char* Method_Name, Args... args)
-	{
-		void* Argsv[] = { &args... };
-		uint64_t ThunkAddress = Get_Address_of_Method(Assembly_Image, klass, Method_Name, ARRAY_COUNT(Argsv));
-
-		if (!ThunkAddress)
-		{
-			MonoLog("Invoke: Failed to call \"%s\".", Method_Name);
-			return;
-		}
-
-		if (Instance)
-		{
-			void(*Method)(MonoObject* Instance, Args... args) = decltype(Method)(ThunkAddress);
-			Method(Instance, args...);
-		}
-		else //Static Call.
-		{
-			void(*Method)(Args... args) = decltype(Method)(ThunkAddress);
-			Method(args...);
-		}
-	}*/
 
 	template <typename result, typename... Args>
 	static result Invoke(MonoImage* Assembly_Image, MonoClass* klass, MonoObject* Instance, const char* Method_Name, Args... args)

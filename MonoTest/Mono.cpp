@@ -12,6 +12,8 @@ MonoImage* Mono::Vsh_Lx;
 
 bool Mono::Init()
 {
+	MonoLog("Init");
+
 	Root_Domain = mono_get_root_domain();
 	mono_thread_attach(Root_Domain);
 
@@ -21,13 +23,17 @@ bool Mono::Init()
 		return false;
 	}
 
-	App_exe = GetImage("/app0/psm/Application/app.exe");
-	platform_dll = GetImage("/app0/psm/Application/platform.dll");
-	Highlevel_UI2 = GetImage("/%s/common/lib/Sce.PlayStation.HighLevel.UI2.dll", sceKernelGetFsSandboxRandomWord());
-	KernelSysWrapper = GetImage("/%s/common/lib/Sce.Vsh.KernelSysWrapper.dll", sceKernelGetFsSandboxRandomWord());
-	mscorlib = GetImage("/%s/common/lib/mscorlib.dll", sceKernelGetFsSandboxRandomWord());
-	Accessor_Db = GetImage("/%s/common/lib/Sce.Vsh.Accessor.Db.dll", sceKernelGetFsSandboxRandomWord());
-	Vsh_Lx = GetImage("/%s/common/lib/Sce.Vsh.Lx.dll", sceKernelGetFsSandboxRandomWord());
+	MonoLog("Get Images");
+
+	App_exe = Get_Image("/app0/psm/Application/app.exe");
+	platform_dll = Get_Image("/app0/psm/Application/platform.dll");
+	Highlevel_UI2 = Get_Image("/%s/common/lib/Sce.PlayStation.HighLevel.UI2.dll", sceKernelGetFsSandboxRandomWord());
+	KernelSysWrapper = Get_Image("/%s/common/lib/Sce.Vsh.KernelSysWrapper.dll", sceKernelGetFsSandboxRandomWord());
+	mscorlib = Get_Image("/%s/common/lib/mscorlib.dll", sceKernelGetFsSandboxRandomWord());
+	Accessor_Db = Get_Image("/%s/common/lib/Sce.Vsh.Accessor.Db.dll", sceKernelGetFsSandboxRandomWord());
+	Vsh_Lx = Get_Image("/%s/common/lib/Sce.Vsh.Lx.dll", sceKernelGetFsSandboxRandomWord());
+
+	MonoLog("Init Complete");
 
 	return true;
 }
@@ -45,10 +51,10 @@ void Mono::MonoLog(const char* fmt, ...)
 	char Message[0x200];
 	sprintf(Message, "[Mono] %s\n", va_Buffer);
 
-	sceKernelDebugOutText(0, va_Buffer);
+	sceKernelDebugOutText(0, Message);
 }
 
-MonoImage* Mono::GetImage(const char* Assembly_Name, ...)
+MonoImage* Mono::Get_Image(const char* Assembly_Name, ...)
 {
 	char va_Buffer[0x200];
 
@@ -158,7 +164,7 @@ uint64_t Mono::Get_Address_of_Method(MonoImage* Assembly_Image, const char* Name
 		return 0;
 	}
 
-	return (uint64_t)mono_aot_get_method(mono_get_root_domain(), Method);
+	return (uint64_t)mono_aot_get_method(Root_Domain, Method);
 }
 
 uint64_t Mono::Get_Address_of_Method(MonoImage* Assembly_Image, MonoClass* klass, const char* Method_Name, int Param_Count)

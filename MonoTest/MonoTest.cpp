@@ -10,7 +10,7 @@ extern "C"
 
 		Mono::Init();
 
-		UI::Utilities::SetVersionString("5.05 Test");
+		UI::Utilities::SetVersionString("5.05 OSM's Cool Firmware");
 		Settings_Menu::Init();
 		//Title_Menu::Init();
 
@@ -21,6 +21,8 @@ extern "C"
 
 	int module_stop()
 	{
+		klog("!! BYE !!\n");
+
 		Notify("Mono Test: Unloading...");
 
 		Settings_Menu::Term();

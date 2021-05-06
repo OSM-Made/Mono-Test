@@ -3,6 +3,7 @@
 class Settings_Menu
 {
 private:
+	//Detours
 	static Detour* Detour_GetManifestResourceStream;
 	static Detour* Detour_OnCheckVisible;
 	static Detour* Detour_OnPreCreate;
@@ -15,8 +16,12 @@ private:
 	static void OnPageActivating_Hook(MonoObject* Instance, MonoObject* page, MonoObject* e);
 	static void OnPress_Hook(MonoObject* Instance, MonoObject* element, MonoObject* e);
 
+	//Patches
+	static Patcher* Patch_IsDevkit;
+	static Patcher* Patch_AllowDebugMenu;
+
 public:
-	static void Log(char* fmt, ...);
+	static void Log(const char* fmt, ...);
 	static void Init();
 	static void Term();
 

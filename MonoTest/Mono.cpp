@@ -48,7 +48,7 @@ void Mono::MonoLog(const char* fmt, ...)
 	vsprintf(va_Buffer, fmt, args);
 	va_end(args);
 
-	klog(0, "[Mono] %s\n", va_Buffer);
+	klog("[Mono] %s\n", va_Buffer);
 }
 
 MonoImage* Mono::Get_Image(const char* Assembly_Name, ...)

@@ -2,8 +2,8 @@
     .global settings_root
 	.type   settings_root, @object
 	.align  4
-    .global test_menu
-	.type   test_menu, @object
+    .global orbis_toolbox
+	.type   orbis_toolbox, @object
 	.align  4
     .global external_hdd
 	.type   external_hdd, @object
@@ -18,14 +18,14 @@ settings_root_End:
 settings_root_Size:
     .int    settings_root_End - settings_root
 
-test_menu:
-    .incbin "test_menu.xml"
-test_menu_End:
-    .global test_menu_Size
-    .type   test_menu_Size, @object
+orbis_toolbox:
+    .incbin "orbis_toolbox.xml"
+orbis_toolbox_End:
+    .global orbis_toolbox_Size
+    .type   orbis_toolbox_Size, @object
     .align  4
-test_menu_Size:
-    .int    test_menu_End - test_menu
+orbis_toolbox_Size:
+    .int    orbis_toolbox_End - orbis_toolbox
 
 external_hdd:
     .incbin "external_hdd.xml"

@@ -72,6 +72,9 @@
     <ClCompile Include="Patcher.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MonoTest.h">
@@ -98,6 +101,9 @@
     <ClInclude Include="Patcher.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings_root.xml">
@@ -106,7 +112,7 @@
     <Xml Include="external_hdd.xml">
       <Filter>Source Files\XML</Filter>
     </Xml>
-    <Xml Include="test_menu.xml">
+    <Xml Include="orbis_toolbox.xml">
       <Filter>Source Files\XML</Filter>
     </Xml>
   </ItemGroup>

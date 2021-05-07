@@ -67,6 +67,7 @@ del /s /q /f $(IntDir)\*.oelf</NMakeCleanCommandLine>
     <ClCompile Include="DebugTitleIdLabel.cpp" />
     <ClCompile Include="Detour.cpp" />
     <ClCompile Include="DevkitPanel.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Mono.cpp" />
     <ClCompile Include="MonoTest.cpp" />
     <ClCompile Include="Patcher.cpp" />
@@ -77,6 +78,7 @@ del /s /q /f $(IntDir)\*.oelf</NMakeCleanCommandLine>
   <ItemGroup>
     <ClInclude Include="Common.h" />
     <ClInclude Include="Detour.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Mono.h" />
     <ClInclude Include="MonoTest.h" />
     <ClInclude Include="Patcher.h" />
@@ -91,7 +93,7 @@ del /s /q /f $(IntDir)\*.oelf</NMakeCleanCommandLine>
   <ItemGroup>
     <Xml Include="external_hdd.xml" />
     <Xml Include="settings_root.xml" />
-    <Xml Include="test_menu.xml" />
+    <Xml Include="orbis_toolbox.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

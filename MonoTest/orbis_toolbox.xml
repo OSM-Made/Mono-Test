@@ -2,14 +2,31 @@
 
 <system_settings version="1.0" plugin="settings_root_plugin">
 
-  <!-- ★Test Menu -->
-  <setting_list id="id_test_menu" title="★Debug Settings v2" initial_focus_to="id_game_package_installer">
+  <!-- ★Orbis Toolbox -->
+  <setting_list id="id_test_menu" title="★Orbis Toolbox" initial_focus_to="id_game_package_installer">
+    
     <!-- Package Installer -->
     <link id="id_game_package_installer" title="Package Installer" icon="https://i.imgur.com/NeY8pk7.png" file="PkgInstaller/data/pkginstaller.xml" />
 
+    <!-- System Settings -->
     <setting_list id="system_settings" title="System Settings" icon="https://i.imgur.com/hqJAWXq.png" initial_focus_to="id_licenseactivation">
+
       <!-- License Activation -->
-      <link id="id_licenseactivation" title="License Activation" file="DebugSettings/data/debug_settings_licenseactivation.xml" />
+      <setting_list id="id_licenseactivation" title="License Activation">
+
+        <!-- MPEG-2 -->
+        <toggle_switch id="id_licenseactivation_mpeg2" title="MPEG-2" key="/SYSTEM/ACTIVATION/mpeg2"/>
+
+        <!-- VC-1 -->
+        <toggle_switch id="id_licenseactivation_vc1" title="VC-1" key="/SYSTEM/ACTIVATION/vc1"/>
+
+        <!-- HEVC -->
+        <toggle_switch id="id_licenseactivation_hevc" title="HEVC" key="/SYSTEM/ACTIVATION/hevc"/>
+
+        <!-- HEVC software decoder -->
+        <toggle_switch id="id_licenseactivation_hevc_soft" title="HEVC software decoder" key="/SYSTEM/ACTIVATION/hevc_soft"/>
+
+      </setting_list>
 
       <!-- External HDD -->
       <link id="id_external_hdd" title="External HDD" file="external_hdd.xml" />
@@ -31,7 +48,35 @@
 
     </setting_list>
 
+    <!-- Power Options -->
+    <setting_list id="power_options" title="Power Options" icon="https://i.imgur.com/hqJAWXq.png" initial_focus_to="id_reboot">
+
+      <!-- Reload ShellUI -->
+      <button id="id_reload_shellui" title="Reload ShellUI" SecondTitle="Soft reloads the Live Area."/>
+
+      <!-- Reboot -->
+      <button id="id_reboot" title="Reboot" SecondTitle="Fully reboots the System."/>
+
+      <!-- Shutdown -->
+      <button id="id_shutdown" title="Shutdown" SecondTitle="Turns off the System."/>
+
+      <!-- Suspend -->
+      <button id="id_suspend" title="Suspend" SecondTitle="Suspends the system to the Restmode state."/>
+      
+    </setting_list>
+    
+    <!-- Payload Loader -->
     <setting_list id="id_payloads" title="Payload Loader" icon="https://i.imgur.com/JwM4MeX.png" restorable="false">
+      <message id="id_message" title="msg_wait" busyindicator="true"/>
+    </setting_list>
+
+    <!-- Daemon Manager -->
+    <setting_list id="id_daemons" title="Daemon Manager" restorable="false">
+      <message id="id_message" title="msg_wait" busyindicator="true"/>
+    </setting_list>
+
+    <!-- ShellUI Plugin Manager -->
+    <setting_list id="id_plugins" title="ShellUI Plugin Manager" restorable="false">
       <message id="id_message" title="msg_wait" busyindicator="true"/>
     </setting_list>
 

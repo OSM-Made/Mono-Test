@@ -6,8 +6,8 @@
 //Embedded xmls
 extern uint8_t settings_root[];
 extern int32_t settings_root_Size;
-extern uint8_t test_menu[];
-extern int32_t test_menu_Size;
+extern uint8_t orbis_toolbox[];
+extern int32_t orbis_toolbox_Size;
 extern uint8_t external_hdd[];
 extern int32_t external_hdd_Size;
 
@@ -22,18 +22,12 @@ Detour* Settings_Menu::Detour_OnPress = nullptr;
 Patcher* Settings_Menu::Patch_IsDevkit;
 Patcher* Settings_Menu::Patch_AllowDebugMenu;
 
-MonoObject* New_MemoryStream(void* Buffer, int Buffer_Size)
-{
-	MonoArray* Array = Mono::New_Array(mono_get_byte_class(), Buffer_Size);
-	char* Array_addr = mono_array_addr_with_size(Array, sizeof(char), 0);
-	memcpy(Array_addr, Buffer, Buffer_Size);
-
-	MonoClass* MemoryStream = Mono::Get_Class(Mono::mscorlib, "System.IO", "MemoryStream");
-	MonoObject* MemoryStream_Instance = Mono::New_Object(MemoryStream);
-	Mono::Invoke<void>(Mono::mscorlib, MemoryStream, MemoryStream_Instance, ".ctor", Array, true);
-
-	return MemoryStream_Instance;
-}
+/*
+	GetManifestResourceStream:
+		This is the method I hook that loads internal packed resources 
+		from the mono UI. I intercept the uri and force it to return a 
+		new memory stream of the bytes for our custom xml.
+*/
 
 uint64_t Settings_Menu::GetManifestResourceStream_Hook(uint64_t inst, MonoString* FileName)
 {
@@ -42,13 +36,28 @@ uint64_t Settings_Menu::GetManifestResourceStream_Hook(uint64_t inst, MonoString
 
 	if (!strcmp(str, "Sce.Vsh.ShellUI.src.Sce.Vsh.ShellUI.Settings.Plugins.SettingsRoot.data.settings_root.xml"))
 		return (uint64_t)New_MemoryStream(settings_root, settings_root_Size);
-	else if (!strcmp(str, "Sce.Vsh.ShellUI.src.Sce.Vsh.ShellUI.Settings.Plugins.TestMenu.xml"))
-		return (uint64_t)New_MemoryStream(test_menu, test_menu_Size);
+	else if (!strcmp(str, "Sce.Vsh.ShellUI.src.Sce.Vsh.ShellUI.Settings.Plugins.orbis_toolbox.xml"))
+		return (uint64_t)New_MemoryStream(orbis_toolbox, orbis_toolbox_Size);
 	else if (!strcmp(str, "Sce.Vsh.ShellUI.src.Sce.Vsh.ShellUI.Settings.Plugins.external_hdd.xml"))
 		return (uint64_t)New_MemoryStream(external_hdd, external_hdd_Size);
 	else
 		return Detour_GetManifestResourceStream->Stub<uint64_t>(inst, FileName);
 }
+
+/*
+	Settings Root Hooks:
+		I set my custom menu as the plugin of the root settings page
+		this allows me to hook all the call backs from inside this
+		page and run my own code.
+
+		Note: in the xml "plugin="settings_root_plugin""
+*/
+
+/*
+	OnCheckVisible:
+		This could allow us to show and hide elements on each page
+		much like the id_message which is a loading symbol.
+*/
 
 void Settings_Menu::OnCheckVisible_Hook(MonoObject* Instance, MonoObject* element, MonoObject* e)
 {
@@ -60,11 +69,15 @@ void Settings_Menu::OnCheckVisible_Hook(MonoObject* Instance, MonoObject* elemen
 			Mono::Set_Property(SettingElement, "Visible", element, false);
 	}
 	Detour_OnCheckVisible->Stub<void>(Instance, element, e);
-	//    klog("OnVisible: %s\n", mono_string_to_utf8(Mono::Get_Property<MonoString*>(Mono::Get_Class(App_exe, "Sce.Vsh.ShellUI.Settings.Core", "SettingElement"), "Id", element)));
-
-	//Detour_OnCheckVisible->Stub<void>(Instance, element, e);
-	//no real use unless we want to hide some parts of the menu for like say an advanced mode.
 }
+
+/*
+	OnPreCreate:
+		This Hook allows us to set values of each menu element
+		depending on what is set prior. For example I use this
+		to set the check boxes to match the previously selected
+		values.
+*/
 
 void Settings_Menu::OnPreCreate_Hook(MonoObject* Instance, MonoObject* element, MonoObject* e)
 {
@@ -89,32 +102,13 @@ void Settings_Menu::OnPreCreate_Hook(MonoObject* Instance, MonoObject* element, 
 	Detour_OnPreCreate->Stub<void>(Instance, element, e);
 }
 
-void ResetMenuItem(const char* Menu)
-{
-	MonoClass* UIManager = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.Core", "UIManager");
-	Mono::Invoke<void>(Mono::App_exe, UIManager, Mono::Get_Instance(UIManager, "Instance"), "ResetMenuItem", Mono::New_String(Menu));
-}
-
-void AddMenuItem(MonoObject* ElementData)
-{
-	MonoClass* UIManager = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.Core", "UIManager");
-	Mono::Invoke<void>(Mono::App_exe, UIManager, Mono::Get_Instance(UIManager, "Instance"), "AddMenuItem", ElementData, Mono::New_String(""));
-}
-
-MonoObject* NewElementData(const char* Id, const char* Title, const char* Title2, const char* Icon)
-{
-	MonoClass* ButtonElementData = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.Core", "ButtonElementData");
-	MonoClass* ElementData = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.Core", "ElementData");
-	MonoObject* Instance = Mono::New_Object(ButtonElementData);
-	mono_runtime_object_init(Instance);
-
-	Mono::Set_Property(ElementData, "Id", Instance, Mono::New_String(Id));
-	Mono::Set_Property(ElementData, "Title", Instance, Mono::New_String(Title));
-	Mono::Set_Property(ElementData, "SecondTitle", Instance, Mono::New_String(Title2));
-	Mono::Set_Property(ElementData, "Icon", Instance, Mono::New_String(Icon));
-
-	return Instance;
-}
+/*
+	OnPageActivating:
+		Hooking this allows us to add custom elements when a
+		page is loading like for example how I will be using
+		it to parse the payloads from the HDD and display
+		them to be loaded.
+*/
 
 void Settings_Menu::OnPageActivating_Hook(MonoObject* Instance, MonoObject* page, MonoObject* e)
 {
@@ -140,6 +134,12 @@ void Settings_Menu::OnPageActivating_Hook(MonoObject* Instance, MonoObject* page
 	}
 	Detour_OnPageActivating->Stub<void>(Instance, page, e);
 }
+
+/*
+	OnPress:
+		This Hook allows us to catch when a element is selected
+		or its value is changed.
+*/
 
 void Settings_Menu::OnPress_Hook(MonoObject* Instance, MonoObject* element, MonoObject* e)
 {
@@ -196,10 +196,7 @@ void Settings_Menu::Log(const char* fmt, ...)
 	vsprintf(va_Buffer, fmt, args);
 	va_end(args);
 
-	char Message[0x200];
-	sprintf(Message, "[Settings Menu] %s\n", va_Buffer);
-
-	sceKernelDebugOutText(0, Message);
+	klog("[Settings Menu] %s\n", va_Buffer);
 }
 
 void Settings_Menu::Init()
@@ -218,7 +215,6 @@ void Settings_Menu::Init()
 	Detour_OnPageActivating = new Detour();
 	Detour_OnPress = new Detour();
 
-	//TODO: Update instruction counts and call stubs
 	Log("Detour Methods");
 	Detour_GetManifestResourceStream->DetourMethod(Mono::mscorlib, "System.Reflection", "Assembly", "GetManifestResourceStream", 1, (void*)GetManifestResourceStream_Hook, 17);
 	Detour_OnCheckVisible->DetourMethod(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.SettingsRoot", "SettingsRootHandler", "OnCheckVisible", 2, (void*)OnCheckVisible_Hook, 16);

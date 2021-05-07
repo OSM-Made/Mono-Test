@@ -46,3 +46,43 @@ void Notify(const char* MessageFMT, ...)
 	// and writing the NotifyBuffer we created to it. Somewhere in ShellUI it is read and parsed into a json which is where
 	// I found some clues on how to build the buffer.
 }
+
+MonoObject* New_MemoryStream(void* Buffer, int Buffer_Size)
+{
+	MonoArray* Array = Mono::New_Array(mono_get_byte_class(), Buffer_Size);
+	char* Array_addr = mono_array_addr_with_size(Array, sizeof(char), 0);
+	memcpy(Array_addr, Buffer, Buffer_Size);
+
+	MonoClass* MemoryStream = Mono::Get_Class(Mono::mscorlib, "System.IO", "MemoryStream");
+	MonoObject* MemoryStream_Instance = Mono::New_Object(MemoryStream);
+	Mono::Invoke<void>(Mono::mscorlib, MemoryStream, MemoryStream_Instance, ".ctor", Array, true);
+
+	return MemoryStream_Instance;
+}
+
+void ResetMenuItem(const char* Menu)
+{
+	MonoClass* UIManager = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.Core", "UIManager");
+	Mono::Invoke<void>(Mono::App_exe, UIManager, Mono::Get_Instance(UIManager, "Instance"), "ResetMenuItem", Mono::New_String(Menu));
+}
+
+void AddMenuItem(MonoObject* ElementData)
+{
+	MonoClass* UIManager = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.Core", "UIManager");
+	Mono::Invoke<void>(Mono::App_exe, UIManager, Mono::Get_Instance(UIManager, "Instance"), "AddMenuItem", ElementData, Mono::New_String(""));
+}
+
+MonoObject* NewElementData(const char* Id, const char* Title, const char* Title2, const char* Icon)
+{
+	MonoClass* ButtonElementData = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.Core", "ButtonElementData");
+	MonoClass* ElementData = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.Core", "ElementData");
+	MonoObject* Instance = Mono::New_Object(ButtonElementData);
+	mono_runtime_object_init(Instance);
+
+	Mono::Set_Property(ElementData, "Id", Instance, Mono::New_String(Id));
+	Mono::Set_Property(ElementData, "Title", Instance, Mono::New_String(Title));
+	Mono::Set_Property(ElementData, "SecondTitle", Instance, Mono::New_String(Title2));
+	Mono::Set_Property(ElementData, "Icon", Instance, Mono::New_String(Icon));
+
+	return Instance;
+}

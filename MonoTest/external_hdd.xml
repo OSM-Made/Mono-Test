@@ -5,7 +5,7 @@
   <setting_list id="id_external_hdd" title="External HDD">
 
     <!-- Unmount -->
-    <button id="id_external_hdd_unmount" title="Unmount"/>
+    <button id="id_external_hdd_unmount" title="Unmount" second_title="Will unmount any usb connected to the System."/>
 
     <!-- Format -->
     <button id="id_external_hdd_format" title="Format"/>

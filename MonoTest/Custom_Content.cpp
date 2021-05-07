@@ -53,8 +53,6 @@ void UI::Custom_Content::StartDebugSettings_Hook(MonoObject* Instance)
 {
 	MonoClass* UIManager = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Settings.Core", "UIManager");
 	MonoClass* SettingsApplication = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI", "SettingsApplication");
-	klog("Instance: 0x%llX\n", Mono::Get_Instance(UIManager, "Instance"));
-	klog("uiManager: 0x%llX\n", Mono::Get_Field<MonoObject*>(SettingsApplication, Instance, "uiManager"));
 	Mono::Invoke<void>(Mono::App_exe, UIManager, Mono::Get_Field<MonoObject*>(SettingsApplication, Instance, "uiManager"), "PushWizard", Mono::New_String("orbis_toolbox.xml"), Mono::New_String("id_orbis_toolbox"), 3);
 }
 

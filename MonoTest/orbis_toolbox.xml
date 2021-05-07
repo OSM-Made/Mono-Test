@@ -12,7 +12,7 @@
     <setting_list id="system_settings" title="System Settings" icon="https://i.imgur.com/hqJAWXq.png" initial_focus_to="id_licenseactivation">
 
       <!-- License Activation -->
-      <setting_list id="id_licenseactivation" title="License Activation">
+      <setting_list id="id_licenseactivation" title="License Activation" second_title="Enable and disable codecs for consuming media.">
 
         <!-- MPEG-2 -->
         <toggle_switch id="id_licenseactivation_mpeg2" title="MPEG-2" key="/SYSTEM/ACTIVATION/mpeg2"/>
@@ -32,36 +32,36 @@
       <link id="id_external_hdd" title="External HDD" file="external_hdd.xml" />
 
       <!-- NP Debug -->
-      <toggle_switch id="id_np_debug" title="NP Debug" key="/NP/debug"/>
+      <toggle_switch id="id_np_debug" title="NP Debug" second_title="Shows NP debugging popups." key="/NP/debug"/>
 
-      <!-- Display Title ID on Home Screen -->
+      <!-- Show TitleID Labels -->
       <toggle_switch id="id_system_disp_titleid" title="Show TitleID Labels" value="0"/>
 
-      <!-- Display Title ID on Home Screen -->
+      <!-- Show Devkit Panel -->
       <toggle_switch id="id_system_disp_devkit_panel" title="Show Devkit Panel" value="0"/>
 
-      <!-- Display ★Debug Settings on Home Screen -->
+      <!-- Show"★Orbis Toolbox" shortcu -->
       <toggle_switch id="id_system_disp_debug_settings_panel" title="Show &quot;★Orbis Toolbox&quot; shortcut" value="0"/>
 
-      <!-- Display ★APP_HOME on Home Screen -->
+      <!-- Show ";★APP_HOME" -->
       <toggle_switch id="id_system_disp_app_home_panel" title="Show &quot;★APP_HOME&quot;" value="0"/>
 
     </setting_list>
 
     <!-- Power Options -->
-    <setting_list id="power_options" title="Power Options" icon="https://i.imgur.com/hqJAWXq.png" initial_focus_to="id_reboot">
+    <setting_list id="power_options" title="Power Options" initial_focus_to="id_reboot">
 
       <!-- Reload ShellUI -->
-      <button id="id_reload_shellui" title="Reload ShellUI" SecondTitle="Soft reloads the Live Area."/>
+      <button id="id_reload_shellui" title="Reload ShellUI" second_title="Soft reloads the Live Area."/>
 
       <!-- Reboot -->
-      <button id="id_reboot" title="Reboot" SecondTitle="Fully reboots the System."/>
+      <button id="id_reboot" title="Reboot" second_title="Fully reboots the System."/>
 
       <!-- Shutdown -->
-      <button id="id_shutdown" title="Shutdown" SecondTitle="Turns off the System."/>
+      <button id="id_shutdown" title="Shutdown" second_title="Turns off the System."/>
 
       <!-- Suspend -->
-      <button id="id_suspend" title="Suspend" SecondTitle="Suspends the system to the Restmode state."/>
+      <button id="id_suspend" title="Suspend" second_title="Suspends the system to the &quot;Rest Mode&quot; state."/>
       
     </setting_list>
     
@@ -77,6 +77,11 @@
 
     <!-- ShellUI Plugin Manager -->
     <setting_list id="id_plugins" title="ShellUI Plugin Manager" restorable="false">
+      <message id="id_message" title="msg_wait" busyindicator="true"/>
+    </setting_list>
+    
+    <!-- Orbis Toolbox Settings -->
+    <setting_list id="orbis_toolbox_settings" title="Orbis Toolbox Settings">
       <message id="id_message" title="msg_wait" busyindicator="true"/>
     </setting_list>
 

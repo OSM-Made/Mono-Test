@@ -98,6 +98,11 @@ void Settings_Menu::OnPreCreate_Hook(MonoObject* Instance, MonoObject* element, 
 			Mono::Set_Property(SettingElement, "Value", element, UI::Custom_Content::Show_Debug_Settings ? Mono::New_String("1") : Mono::New_String("0"));
 		else if (!strcmp(Id, "id_system_disp_app_home_panel"))
 			Mono::Set_Property(SettingElement, "Value", element, UI::Custom_Content::Show_App_Home ? Mono::New_String("1") : Mono::New_String("0"));
+		else if (!strcmp(Id, "id_orbislib"))
+			Mono::Set_Property(SettingElement, "Value", element, Mono::New_String("Stopped"));
+		else if(!strcmp(Id, "id_orbisftp"))
+			Mono::Set_Property(SettingElement, "Value", element, Mono::New_String("Running"));
+		
 	}
 	Detour_OnPreCreate->Stub<void>(Instance, element, e);
 }

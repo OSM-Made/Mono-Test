@@ -73,6 +73,14 @@
     <!-- Daemon Manager -->
     <setting_list id="id_daemons" title="Daemon Manager" restorable="false">
       <message id="id_message" title="msg_wait" busyindicator="true"/>
+      
+      <label id="info1" title="Daemons are background applications that can be run on your system. Here you can see the status of your Daemons and Manage them.&#xa;Daemons are loaded from &quot;/system/vsh/app/&quot;." style="left" border="true"/>
+      
+      <spacer id="-1-" height="20"/>
+      
+      <button id="id_orbislib" title="OrbisLib Daemon" icon="file:///usb0/icon0.png" value="Stopped"/>
+      <button id="id_orbisftp" title="Orbis FTP" icon="file:///usb0/icon1.png" value="Stopped"/>
+      
     </setting_list>
 
     <!-- ShellUI Plugin Manager -->

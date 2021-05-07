@@ -3,7 +3,7 @@
 <system_settings version="1.0" plugin="settings_root_plugin">
 
   <!-- ★Orbis Toolbox -->
-  <setting_list id="id_test_menu" title="★Orbis Toolbox" initial_focus_to="id_game_package_installer">
+  <setting_list id="id_orbis_toolbox" title="★Orbis Toolbox" initial_focus_to="id_game_package_installer">
     
     <!-- Package Installer -->
     <link id="id_game_package_installer" title="Package Installer" icon="https://i.imgur.com/NeY8pk7.png" file="PkgInstaller/data/pkginstaller.xml" />
@@ -35,16 +35,16 @@
       <toggle_switch id="id_np_debug" title="NP Debug" key="/NP/debug"/>
 
       <!-- Display Title ID on Home Screen -->
-      <toggle_switch id="id_system_disp_titleid" title="Display Title ID on Home Screen" value="0"/>
+      <toggle_switch id="id_system_disp_titleid" title="Show TitleID Labels" value="0"/>
 
       <!-- Display Title ID on Home Screen -->
-      <toggle_switch id="id_system_disp_devkit_panel" title="Display Devkit Panel on Home Screen" value="0"/>
+      <toggle_switch id="id_system_disp_devkit_panel" title="Show Devkit Panel" value="0"/>
 
       <!-- Display ★Debug Settings on Home Screen -->
-      <toggle_switch id="id_system_disp_debug_settings_panel" title="Display ★Debug Settings on Home Screen" value="0"/>
+      <toggle_switch id="id_system_disp_debug_settings_panel" title="Show &quot;★Orbis Toolbox&quot; shortcut" value="0"/>
 
       <!-- Display ★APP_HOME on Home Screen -->
-      <toggle_switch id="id_system_disp_app_home_panel" title="Display ★APP_HOME on Home Screen" value="0"/>
+      <toggle_switch id="id_system_disp_app_home_panel" title="Show &quot;★APP_HOME&quot;" value="0"/>
 
     </setting_list>
 

@@ -18,7 +18,7 @@ MonoObject* UI::Custom_Content::ExecuteSelectQuery_Hook(MonoObject* Instance, in
 	if (Mono::Get_Field<int>(AppBrowseItemAccessor, Instance, "exclusionFilterTypeAppHome") == 0)
 	{
 		if (Show_Debug_Settings)
-			Mono::Invoke<void>(Mono::Accessor_Db, List, List_Instance, "Insert", 0, Utilities::NewAppBrowseItem("NPXS20993", "★Debug Settings"));
+			Mono::Invoke<void>(Mono::Accessor_Db, List, List_Instance, "Insert", 0, Utilities::NewAppBrowseItem("NPXS20993", "★Orbis Toolbox"));
 
 		if (Show_App_Home)
 		{
@@ -55,7 +55,7 @@ void UI::Custom_Content::StartDebugSettings_Hook(MonoObject* Instance)
 	MonoClass* SettingsApplication = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI", "SettingsApplication");
 	klog("Instance: 0x%llX\n", Mono::Get_Instance(UIManager, "Instance"));
 	klog("uiManager: 0x%llX\n", Mono::Get_Field<MonoObject*>(SettingsApplication, Instance, "uiManager"));
-	Mono::Invoke<void>(Mono::App_exe, UIManager, Mono::Get_Field<MonoObject*>(SettingsApplication, Instance, "uiManager"), "PushWizard", Mono::New_String("TestMenu.xml"), Mono::New_String("id_test_menu"), 3);
+	Mono::Invoke<void>(Mono::App_exe, UIManager, Mono::Get_Field<MonoObject*>(SettingsApplication, Instance, "uiManager"), "PushWizard", Mono::New_String("orbis_toolbox.xml"), Mono::New_String("id_orbis_toolbox"), 3);
 }
 
 MonoString* GetTexture(const char* texId)

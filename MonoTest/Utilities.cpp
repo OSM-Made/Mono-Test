@@ -86,3 +86,31 @@ MonoObject* NewElementData(const char* Id, const char* Title, const char* Title2
 
 	return Instance;
 }
+
+MonoObject* NewUIColor(float R, float G, float B, float A)
+{
+	MonoClass* UIColor = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "UIColor");
+
+	//Allocates memory for our new instance of a class.
+	MonoObject* UIColor_Instance = Mono::New_Object(UIColor);
+
+	//  Calling the constructor for the struct** Notice that for structs we have to unbox the
+	//  Object first before calling the constructor.
+	MonoObject* Real_Instance = (MonoObject*)mono_object_unbox(UIColor_Instance);
+	Mono::Invoke<void>(Mono::Highlevel_UI2, UIColor, Real_Instance, ".ctor", R, G, B, A);
+
+	struct UIColor_s
+	{
+		float R, G, B, A;
+	};
+
+	UIColor_s* Colours = (UIColor_s*)Real_Instance;
+
+	klog("UIColor\n");
+	klog("R = %f\n", Colours->R);
+	klog("G = %f\n", Colours->G);
+	klog("B = %f\n", Colours->B);
+	klog("A = %f\n", Colours->A);
+
+	return Real_Instance;
+}

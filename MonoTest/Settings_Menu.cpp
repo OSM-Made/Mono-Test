@@ -102,6 +102,10 @@ void Settings_Menu::OnPreCreate_Hook(MonoObject* Instance, MonoObject* element, 
 			Mono::Set_Property(SettingElement, "Value", element, Mono::New_String("Stopped"));
 		else if(!strcmp(Id, "id_orbisftp"))
 			Mono::Set_Property(SettingElement, "Value", element, Mono::New_String("Running"));
+		else if (!strcmp(Id, "id_trainer"))
+			Mono::Set_Property(SettingElement, "Value", element, Mono::New_String("Loaded"));
+		else if (!strcmp(Id, "id_fpscounter") || !strcmp(Id, "id_menu"))
+			Mono::Set_Property(SettingElement, "Value", element, Mono::New_String("Not Loaded"));
 		
 	}
 	Detour_OnPreCreate->Stub<void>(Instance, element, e);
@@ -146,6 +150,156 @@ void Settings_Menu::OnPageActivating_Hook(MonoObject* Instance, MonoObject* page
 		or its value is changed.
 */
 
+enum RenderingOrder
+{
+	First = -1,
+	DontCare,
+	Last
+};
+
+MonoObject* NewPanel(const char* Name, float X, float Y, float Width, float Height, float R, float G, float B, float A, RenderingOrder RenderingOrder)
+{
+	MonoClass* Panel = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Panel");
+	MonoClass* AreaManager = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.TopMenu", "AreaManager");
+	MonoClass* VoiceRecognitionFrameScene = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.VoiceRecognition", "VoiceRecognitionFrameScene");
+	MonoClass* Scene = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Scene");
+	MonoClass* Widget = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Widget");
+	MonoClass* FontConfig = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "FontConfig");
+	MonoClass* RectangleElement = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "RectangleElement");
+
+	MonoObject* TopScene = Mono::Invoke<MonoObject*>(Mono::App_exe, AreaManager, Mono::Get_Instance(AreaManager, "Instance"), "GetTopScene");
+	MonoObject* rootWidget = Mono::Get_Property<MonoObject*>(Scene, "RootWidget", TopScene);
+
+	Mono::Set_Property(Widget, "ClipChildren", rootWidget, false);
+
+	//Allocates memory for our new instance of a class.
+	MonoObject* PanelInstance = Mono::New_Object(Panel);
+
+	//Call Constructor.
+	mono_runtime_object_init(PanelInstance);
+
+	Mono::Set_Property(Panel, "Name", PanelInstance, Mono::New_String(Name));
+	Mono::Set_Property(Panel, "X", PanelInstance, X);
+	Mono::Set_Property(Panel, "Y", PanelInstance, Y);
+	Mono::Set_Property(Panel, "Width", PanelInstance, Width);
+	Mono::Set_Property(Panel, "Height", PanelInstance, Height);
+
+	Mono::Set_Property(Panel, "BackgroundColor", PanelInstance, NewUIColor(R, G, B, A));
+
+	struct UIColor_s
+	{
+		float R, G, B, A;
+	};
+
+	MonoClass* UIColor = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "UIColor");
+
+	klog("BackgroundColor Get_Field\n");
+	MonoObject* ColorInstance = Mono::Get_Property_test(Panel, "BackgroundColor", PanelInstance);
+	klog("R = %f\n", Mono::Get_Field<float>(UIColor, ColorInstance, "R"));
+	klog("G = %f\n", Mono::Get_Field<float>(UIColor, ColorInstance, "G"));
+	klog("B = %f\n", Mono::Get_Field<float>(UIColor, ColorInstance, "B"));
+	klog("A = %f\n", Mono::Get_Field<float>(UIColor, ColorInstance, "A"));
+
+	UIColor_s* Colours = (UIColor_s*)mono_object_unbox(Mono::Get_Property_test(Panel, "BackgroundColor", PanelInstance));
+	klog("BackgroundColor mono_object_unbox\n");
+	klog("R = %f\n", Colours->R);
+	klog("G = %f\n", Colours->G);
+	klog("B = %f\n", Colours->B);
+	klog("A = %f\n", Colours->A);
+	
+
+	Mono::Set_Property(Panel, "RenderingOrder", PanelInstance, RenderingOrder);
+	//Mono::Set_Property(Panel, "LayoutRule", PanelInstance, NewAdjustContent(Orientation::Vertical, 4, 4, 4, 4));
+
+	/*MonoClass* FitToChildren = Mono::Get_Class(Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "FitToChildren");
+	MonoObject* FitToChildren_Instance = Mono::New_Object(FitToChildren);
+	mono_runtime_object_init(FitToChildren_Instance);
+
+	Mono::Set_Property(Panel, "LayoutRule", PanelInstance, FitToChildren_Instance);*/
+	MonoObject* FontConfig_Instance = Mono::Get_Property<MonoObject*>(Widget, "FontConfig", PanelInstance);
+	Mono::Set_Property(FontConfig, "BoldFontEnabled", FontConfig_Instance, false);
+	Mono::Set_Property(FontConfig, "LargeFontEnabled", FontConfig_Instance, false);
+
+	Mono::Invoke<void>(Mono::App_exe, Widget, rootWidget, "AppendChild", PanelInstance);
+
+	return PanelInstance;
+}
+
+enum Orientation
+{
+	Horizontal,
+	Vertical
+};
+
+enum VerticalAlignment
+{
+	vTop,
+	vBottom,
+	vCenter
+};
+
+enum HorizontalAlignment
+{
+	hLeft,
+	hCenter,
+	hRight
+};
+
+enum FontStyle
+{
+	fsNormal,
+	fsItalic = 2U
+};
+
+enum FontWeight
+{
+	//[Obsolete("This value is not used for Orbis. Use 'Light' or 'Medium'.")]
+	fwNormal,
+	//[Obsolete("Use 'Medium' instead of Bold.")]
+	fwBold,
+	fwLight,
+	fwMedium,
+	//[Obsolete("This value is for GLS. Use 'Medium' instead of LegacyBold.")]
+	fwLegacyBold = 1000U
+};
+
+MonoObject* NewIUFont(int size, int style, int weight)
+{
+	klog("NewIUFont\n");
+	MonoClass* UIFont = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "UIFont");
+
+	//Allocates memory for our new instance of a class.
+	MonoObject* UIFont_Instance = Mono::New_Object(UIFont);
+	Mono::Invoke<void>(Mono::App_exe, UIFont, (MonoObject*)mono_object_unbox(UIFont_Instance), ".ctor", size, style, weight);
+
+	return (MonoObject*)mono_object_unbox(UIFont_Instance);
+}
+
+MonoObject* NewLabel(const char* Name, const char* Text, float X, float Y, float R, float G, float B, float A)
+{
+	MonoClass* Label = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Label");
+	MonoClass* LabelElement = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "LabelElement");
+
+	//Allocates memory for our new instance of a class.
+	MonoObject* Label_Instance = Mono::New_Object(Label);
+
+	//Call the default no param constructor.
+	mono_runtime_object_init(Label_Instance);
+
+	Mono::Set_Property(Label, "Name", Label_Instance, Mono::New_String(Name));
+	Mono::Set_Property(Label, "Text", Label_Instance, Mono::New_String(Text));
+	Mono::Set_Property(Label, "VerticalAlignment", Label_Instance, VerticalAlignment::vCenter);
+	Mono::Set_Property(Label, "HorizontalAlignment", Label_Instance, HorizontalAlignment::hCenter);
+	Mono::Set_Property_test(Label, "TextColor", Label_Instance, NewUIColor(R, G, B, A));
+	Mono::Set_Property_test(Label, "Font", Label_Instance, NewIUFont(28, FontStyle::fsNormal, FontWeight::fwMedium));
+	Mono::Set_Property(Label, "X", Label_Instance, X);
+	Mono::Set_Property(Label, "Y", Label_Instance, Y);
+	Mono::Set_Property(Label, "FitWidthToText", Label_Instance, true);
+	Mono::Set_Property(Label, "FitHeightToText", Label_Instance, true);
+	
+	return Label_Instance;
+}
+
 void Settings_Menu::OnPress_Hook(MonoObject* Instance, MonoObject* element, MonoObject* e)
 {
 	if (Instance && element)
@@ -157,7 +311,47 @@ void Settings_Menu::OnPress_Hook(MonoObject* Instance, MonoObject* element, Mono
 
 		if (!strcmp(Id, "id_Test"))
 		{
-			
+			/*MonoClass* Panel = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Panel");
+			MonoClass* AreaManager = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.TopMenu", "AreaManager");
+
+			MonoObject* AreaManager_Instance = Mono::Get_Instance(Mono::App_exe, "Sce.Vsh.ShellUI.TopMenu", "AreaManager", "Instance");
+			MonoObject* m_devKitPanel = Mono::Get_Field<MonoObject*>(AreaManager, AreaManager_Instance, "m_devKitPanel");
+
+			if (m_devKitPanel) 
+			{
+				MonoObject* NewColor = NewUIColor(1.0f, 0.0f, 0.0f, 0.67f);
+				Mono::Set_Property(Panel, "BackgroundColor", m_devKitPanel, NewColor);
+
+				MonoClass* RectangleElement = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "RectangleElement");
+				MonoObject* element = Mono::Get_Field<MonoObject*>(Panel, m_devKitPanel, "element");
+				MonoObject* fillColor = Mono::Get_Field<MonoObject*>(RectangleElement, element, "fillColor");
+
+				//TODO: Try making a new class of UIColor then set like this...
+
+				klog("fillColor: 0x%llX\n", fillColor);
+
+				struct Test_s
+				{
+					float R;
+					float G;
+					float B;
+					float A;
+				};
+
+				Test_s Test
+				{
+					1.0f, 1.0f, 1.0f, 0.67f
+				};
+
+				Mono::Set_Field(RectangleElement, "fillColor", element, Test);
+
+				
+			}*/
+
+			MonoClass* Widget = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Widget");
+			MonoObject* New_Panel = NewPanel("TESTPANEL", 400.0f, 400.0f, 440.0f, 100.0f, 0.92f, 0.2f, 0.16f, 0.8f, RenderingOrder::Last);
+			Mono::Invoke<void>(Mono::App_exe, Widget, New_Panel, "AppendChild", NewLabel("FACTORYLABEL", "Some Text", 20.0f, 36.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+
 			Notify("Test Button Pressed!");
 		}
 		else if (!strcmp(Id, "id_Test_2"))

@@ -99,7 +99,7 @@ public:
 			return (result)NULL;
 		}
 
-		uint64_t Get_Method_Thunk = (uint64_t)mono_aot_get_method(mono_get_root_domain(), Get_Method);
+		uint64_t Get_Method_Thunk = (uint64_t)mono_aot_get_method(Root_Domain, Get_Method);
 
 		if (Get_Method_Thunk == NULL)
 		{
@@ -109,6 +109,39 @@ public:
 
 		result(*Method)(MonoObject* Instance) = decltype(Method)(Get_Method_Thunk);
 		return Method(Instance);
+	}
+
+	static MonoObject* Get_Property_test(MonoClass* Klass, const char* Property_Name, MonoObject* Instance)
+	{
+		if (Klass == nullptr)
+		{
+			MonoLog("Get_Property: Klass was null.");
+			return (MonoObject*)NULL;
+		}
+
+		if (Instance == nullptr)
+		{
+			MonoLog("Set_Property: Instance was null.");
+			return (MonoObject*)NULL;
+		}
+
+		MonoProperty* Prop = mono_class_get_property_from_name(Klass, Property_Name);
+
+		if (Prop == nullptr)
+		{
+			MonoLog("Get_Property: Property \"%s\" could not be found on class \"%s\".", Property_Name, Klass->name);
+			return (MonoObject*)NULL;
+		}
+
+		MonoMethod* Get_Method = mono_property_get_get_method(Prop);
+
+		if (Get_Method == nullptr)
+		{
+			MonoLog("Get_Property: Could not find Get Method for \"%s\" in class \"%s\".", Property_Name, Klass->name);
+			return (MonoObject*)NULL;
+		}
+
+		return (MonoObject*)mono_runtime_invoke(Get_Method, Instance, nullptr, NULL);
 	}
 
 	template <typename Param>
@@ -142,7 +175,7 @@ public:
 			return;
 		}
 
-		uint64_t Set_Method_Thunk = (uint64_t)mono_aot_get_method(mono_get_root_domain(), Set_Method);
+		uint64_t Set_Method_Thunk = (uint64_t)mono_aot_get_method(Root_Domain, Set_Method);
 
 		if (Set_Method_Thunk == NULL)
 		{
@@ -152,6 +185,39 @@ public:
 
 		void(*Method)(MonoObject* Instance, Param Value) = decltype(Method)(Set_Method_Thunk);
 		Method(Instance, Value);
+	}
+
+	static void Set_Property_test(MonoClass* Klass, const char* Property_Name, MonoObject* Instance, MonoObject* Value)
+	{
+		if (Klass == nullptr)
+		{
+			MonoLog("Set_Property: Klass was null.");
+			return;
+		}
+
+		if (Instance == nullptr)
+		{
+			MonoLog("Set_Property: Instance was null.");
+			return;
+		}
+
+		MonoProperty* Prop = mono_class_get_property_from_name(Klass, Property_Name);
+
+		if (Prop == nullptr)
+		{
+			MonoLog("Set_Property: Property \"%s\" could not be found on class \"%s\".", Property_Name, Klass->name);
+			return;
+		}
+
+		MonoMethod* Set_Method = mono_property_get_set_method(Prop);
+
+		if (Set_Method == nullptr)
+		{
+			MonoLog("Set_Property: Could not find Set Method for \"%s\" in class \"%s\".", Property_Name, Klass->name);
+			return;
+		}
+
+		mono_runtime_invoke(Set_Method, Instance, (void**)&Value, NULL);
 	}
 
 	//
@@ -187,7 +253,7 @@ public:
 	}
 
 	template <typename Param>
-	static void Set_Field(MonoClass* Klass, const char* Field_Name, MonoObject* Instance, Param Value)
+	static void Set_Field(MonoClass* Klass, MonoObject* Instance, const char* Field_Name, Param Value)
 	{
 		if (Klass == nullptr)
 		{

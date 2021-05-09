@@ -70,3 +70,5 @@ MonoObject* New_MemoryStream(void* Buffer, int Buffer_Size);
 void ResetMenuItem(const char* Menu);
 void AddMenuItem(MonoObject* ElementData);
 MonoObject* NewElementData(const char* Id, const char* Title, const char* Title2, const char* Icon);
+
+MonoObject* NewUIColor(float R, float G, float B, float A);

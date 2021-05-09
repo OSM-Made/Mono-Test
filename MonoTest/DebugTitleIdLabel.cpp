@@ -71,6 +71,34 @@ void UI::DebugTitleIdLabel::RemoveTitleId(MonoObject* m_contentsGridList)
 					if (strcmp(Instance->vtable->klass->name, "Label"))
 						continue;
 
+					MonoClass* Label = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Label");
+					MonoClass* LabelElement = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "LabelElement");
+
+					MonoObject* element = Mono::Get_Field<MonoObject*>(Label, Instance, "element");
+					if (element)
+					{
+						struct UIFont_s
+						{
+							MonoString* fileName;
+							unsigned int aliasName;
+							int size;
+							unsigned int style;
+							unsigned int weight;
+							float pixelDensity;
+							bool isEnhanced;
+						};
+
+						//UIFont_s font = (Mono::Get_Field<uint64_t>(LabelElement, element, "font"));
+
+						klog("font: 0x%llX\n", Mono::Get_Field<MonoObject*>(LabelElement, element, "font"));
+						klog("font: 0x%llX\n", (Mono::Get_Field<MonoObject*>(LabelElement, element, "font") + 0x8));
+						klog("font: 0x%llX\n", (Mono::Get_Field<MonoObject*>(LabelElement, element, "font") + 0xC));
+						/*klog("font: 0x%llX\n", font.style);
+						klog("font: 0x%llX\n", font.weight);
+						klog("font: %f\n", font.pixelDensity);
+						klog("font: 0x%llX\n", font.isEnhanced);*/
+					}
+
 					Mono::Invoke<void>(Mono::App_exe, Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Widget"), Instance, "RemoveFromParent");
 				}
 			}

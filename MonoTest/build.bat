@@ -15,7 +15,7 @@ set outputStub=%intdir%%targetname%_stub.so
 
 Rem Compile object files for all the source files
 for %%f in (*.cpp) do (
-    clang++ -cc1 -triple x86_64-scei-ps4-elf -munwind-tables -I"%OO_PS4_TOOLCHAIN%\include" -I"%OO_PS4_TOOLCHAIN%\\include\\c++\\v1" -emit-obj -o %intdir%\%%~nf.o %%~nf.cpp
+    clang++ -cc1 -triple x86_64-scei-ps4-elf -munwind-tables -I"%OO_PS4_TOOLCHAIN%\include" -I"%OO_PS4_TOOLCHAIN%\\include\\c++\\v1" -DORBIS_TOOLBOX_DEBUG -emit-obj -o %intdir%\%%~nf.o %%~nf.cpp
 )
 
 Rem Compile object files for all the assembly files

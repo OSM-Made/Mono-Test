@@ -69,18 +69,18 @@ public:
 	static MonoObject* Get_Instance(MonoImage* Assembly_Image, const char* Namespace, const char* Class_Name, const char* Instance);
 
 	template <typename result>
-	static result Get_Property(MonoClass* Klass, const char* Property_Name, MonoObject* Instance)
+	static result Get_Property(MonoClass* Klass, MonoObject* Instance, const char* Property_Name)
 	{
 		if (Klass == nullptr)
 		{
-			MonoLog("Get_Property: Klass was null.");
-			return (result)NULL;
+			MonoLog("Set_Property: Klass was null.");
+			return (result)0;
 		}
 
 		if (Instance == nullptr)
 		{
 			MonoLog("Set_Property: Instance was null.");
-			return (result)NULL;
+			return (result)0;
 		}
 
 		MonoProperty* Prop = mono_class_get_property_from_name(Klass, Property_Name);
@@ -111,18 +111,19 @@ public:
 		return Method(Instance);
 	}
 
-	static MonoObject* Get_Property_test(MonoClass* Klass, const char* Property_Name, MonoObject* Instance)
+	template <typename result>
+	static result Get_Property_Invoke(MonoClass* Klass, MonoObject* Instance, const char* Property_Name)
 	{
 		if (Klass == nullptr)
 		{
-			MonoLog("Get_Property: Klass was null.");
-			return (MonoObject*)NULL;
+			MonoLog("Set_Property: Klass was null.");
+			return (result)0;
 		}
 
 		if (Instance == nullptr)
 		{
 			MonoLog("Set_Property: Instance was null.");
-			return (MonoObject*)NULL;
+			return (result)0;
 		}
 
 		MonoProperty* Prop = mono_class_get_property_from_name(Klass, Property_Name);
@@ -130,7 +131,7 @@ public:
 		if (Prop == nullptr)
 		{
 			MonoLog("Get_Property: Property \"%s\" could not be found on class \"%s\".", Property_Name, Klass->name);
-			return (MonoObject*)NULL;
+			return (result)NULL;
 		}
 
 		MonoMethod* Get_Method = mono_property_get_get_method(Prop);
@@ -138,14 +139,49 @@ public:
 		if (Get_Method == nullptr)
 		{
 			MonoLog("Get_Property: Could not find Get Method for \"%s\" in class \"%s\".", Property_Name, Klass->name);
-			return (MonoObject*)NULL;
+			return (result)NULL;
 		}
 
-		return (MonoObject*)mono_runtime_invoke(Get_Method, Instance, nullptr, NULL);
+		uint64_t obj = (uint64_t)mono_runtime_invoke(Get_Method, Instance, nullptr, NULL);
+
+		if (std::is_pointer<result>::value)
+			return (result)obj;
+		else
+			return *(result*)mono_object_unbox((MonoObject*)obj);
+	}
+
+	/*template <typename result>
+	static result Get_Property(MonoObject* Instance, const char* Property_Name)
+	{
+		if (Instance == nullptr)
+		{
+			MonoLog("Set_Property: Instance was null.");
+			return (result)0;
+		}
+
+		if (Instance->vtable == nullptr)
+		{
+			MonoLog("Set_Property: Instance->vtable was null.");
+			return (result)0;
+		}
+
+		if (Instance->vtable->klass == nullptr)
+		{
+			MonoLog("Set_Property: Instance->vtable->klass was null.");
+			return (result)0;
+		}
+
+		return Get_Property<result>(Instance->vtable->klass, Instance, Property_Name);
+	}*/
+
+	template <typename result>
+	static result Get_Property(MonoImage* Assembly_Image, const char* Namespace, const char* Class_Name, MonoObject* Instance, const char* Property_Name)
+	{
+		return Get_Property<result>(Mono::Get_Class(Assembly_Image, Namespace, Class_Name), Instance, Property_Name);
 	}
 
 	template <typename Param>
-	static void Set_Property(MonoClass* Klass, const char* Property_Name, MonoObject* Instance, Param Value)
+	static void Set_Property(MonoClass* Klass, MonoObject* Instance, const char* Property_Name, Param Value)
 	{
 		if (Klass == nullptr)
 		{
@@ -187,7 +223,8 @@ public:
 		Method(Instance, Value);
 	}
 
-	static void Set_Property_test(MonoClass* Klass, const char* Property_Name, MonoObject* Instance, MonoObject* Value)
+	template <typename Param>
+	static void Set_Property_Invoke(MonoClass* Klass, MonoObject* Instance, const char* Property_Name, Param Value)
 	{
 		if (Klass == nullptr)
 		{
@@ -219,6 +256,39 @@ public:
 
 		mono_runtime_invoke(Set_Method, Instance, (void**)&Value, NULL);
 	}
+	
+	/*template <typename Param>
+	static void Set_Property(MonoObject* Instance, const char* Property_Name, Param Value)
+	{
+		
+		if (Instance == nullptr)
+		{
+			MonoLog("Set_Property: Instance was null.");
+			return;
+		}
+
+		if (Instance->vtable == nullptr)
+		{
+			MonoLog("Set_Property: Instance->vtable was null.");
+			return;
+		}
+
+		if (Instance->vtable->klass == nullptr)
+		{
+			MonoLog("Set_Property: Instance->vtable->klass was null.");
+			return;
+		}
+
+		MonoClass* Klass = Instance->vtable->klass;
+
+		Set_Property<Param>(Instance->vtable->klass, Instance, Property_Name, Value);
+	}*/
+
+	template <typename Param>
+	static void Set_Property(MonoImage* Assembly_Image, const char* Namespace, const char* Class_Name, MonoObject* Instance, const char* Property_Name, Param Value)
+	{
+		Set_Property<Param>(Mono::Get_Class(Assembly_Image, Namespace, Class_Name), Instance, Property_Name, Value);
+	}
 
 	//
 	// Fields
@@ -232,11 +302,17 @@ public:
 			return (result)0;
 		}
 
+		if (Instance == nullptr)
+		{
+			MonoLog("Get_Field: Instance was null.");
+			return (result)0;
+		}
+
 		MonoClassField* Field = mono_class_get_field_from_name(Klass, Field_Name);
 
 		if (Field == nullptr)
 		{
-			MonoLog("Failed to find get Field \"%s\" in Class \"%s\".", Field_Name, Klass->name);
+			MonoLog("Get_Field: Failed to find get Field \"%s\" in Class \"%s\".", Field_Name, Klass->name);
 			return (result)0;
 		}
 
@@ -245,6 +321,30 @@ public:
 
 		return Value;
 	}
+
+	/*template <typename result>
+	static result Get_Field(MonoObject* Instance, const char* Field_Name)
+	{
+		if (Instance == nullptr)
+		{
+			MonoLog("Get_Field: Instance was null.");
+			return (result)0;
+		}
+
+		if (Instance->vtable == nullptr)
+		{
+			MonoLog("Get_Field: Instance->vtable was null.");
+			return (result)0;
+		}
+
+		if (Instance->vtable->klass == nullptr)
+		{
+			MonoLog("Get_Field: Instance->vtable->klass was null.");
+			return (result)0;
+		}
+
+		return Get_Field<result>(Instance->vtable->klass, Instance, Field_Name);
+	}*/
 
 	template <typename result>
 	static result Get_Field(MonoImage* Assembly_Image, const char* Namespace, const char* Class_Name, MonoObject* Instance, const char* Field_Name)
@@ -271,10 +371,40 @@ public:
 
 		if (Field == nullptr)
 		{
-			MonoLog("Failed to find get Field \"%s\" in Class \"%s\".", Field_Name, Klass->name);
+			MonoLog("Set_Field: Failed to find get Field \"%s\" in Class \"%s\".", Field_Name, Klass->name);
 			return;
 		}
 
 		mono_field_set_value(Instance, Field, &Value);
+	}
+
+	/*template <typename Param>
+	static void Set_Field(MonoObject* Instance, const char* Field_Name, Param Value)
+	{
+		if (Instance == nullptr)
+		{
+			MonoLog("Set_Field: Instance was null.");
+			return;
+		}
+
+		if (Instance->vtable == nullptr)
+		{
+			MonoLog("Set_Field: Instance->vtable was null.");
+			return;
+		}
+
+		if (Instance->vtable->klass == nullptr)
+		{
+			MonoLog("Set_Field: Instance->vtable->klass was null.");
+			return;
+		}
+
+		Set_Field<Param>(Instance->vtable->klass, Instance, Field_Name, Value);
+	}*/
+
+	template <typename Param>
+	static void Set_Field(MonoImage* Assembly_Image, const char* Namespace, const char* Class_Name, MonoObject* Instance, const char* Field_Name, Param Value)
+	{
+		Set_Field<Param>(Mono::Get_Class(Assembly_Image, Namespace, Class_Name), Instance, Field_Name, Value);
 	}
 };

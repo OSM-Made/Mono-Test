@@ -1,4 +1,6 @@
 #pragma once
+#include "Widget.h"
+class Widget;
 
 class Settings_Menu
 {
@@ -19,6 +21,8 @@ private:
 	//Patches
 	static Patcher* Patch_IsDevkit;
 	static Patcher* Patch_AllowDebugMenu;
+
+	static Widget* rootWidget;
 
 public:
 	static void Log(const char* fmt, ...);

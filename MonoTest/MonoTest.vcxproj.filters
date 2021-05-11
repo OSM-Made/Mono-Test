@@ -34,11 +34,20 @@
     <Filter Include="Header Files\Menu">
       <UniqueIdentifier>{2ba1b94e-2edd-4284-84f3-c4b7873b29b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\UI\Elements">
+      <UniqueIdentifier>{3615a494-8322-41e8-80ab-61ad39794723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\Elements">
+      <UniqueIdentifier>{2ecfe71f-5577-4cca-9289-1992a96cd1dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="build.bat" />
     <None Include="Embed.s">
       <Filter>Source Files\XML</Filter>
+    </None>
+    <None Include="Increment.bat">
+      <Filter>Source Files\Utilities</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +84,18 @@
     <ClCompile Include="Menu.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
+    <ClCompile Include="Drawing.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget.cpp">
+      <Filter>Source Files\UI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel.cpp">
+      <Filter>Source Files\UI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Label.cpp">
+      <Filter>Source Files\UI\Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MonoTest.h">
@@ -103,6 +124,18 @@
     </ClInclude>
     <ClInclude Include="Menu.h">
       <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Version.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget.h">
+      <Filter>Header Files\UI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Panel.h">
+      <Filter>Header Files\UI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Label.h">
+      <Filter>Header Files\UI\Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

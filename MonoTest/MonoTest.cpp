@@ -10,7 +10,7 @@ extern "C"
 
 		Mono::Init();
 
-		UI::Utilities::SetVersionString("5.05 OSM's Cool Firmware");
+		//UI::Utilities::SetVersionString("5.05 OSM's Cool Firmware");
 		Settings_Menu::Init();
 		//Title_Menu::Init();
 

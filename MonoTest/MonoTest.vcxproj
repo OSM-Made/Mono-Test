@@ -42,8 +42,9 @@
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NMakePreprocessorDefinitions>_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <NMakeBuildCommandLine>call build.bat $(IntDir) "$(TargetName)" "$(SolutionDir)"</NMakeBuildCommandLine>
+    <NMakePreprocessorDefinitions>ORBIS_TOOLBOX_DEBUG;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeBuildCommandLine>call Increment.bat "Version.h" "ORBIS_TOOLBOX_BUILDVERSION" 
+call build.bat $(IntDir) "$(TargetName)" "$(SolutionDir)"</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>del /s /q /f $(IntDir)\*.o
 del /s /q /f $(IntDir)\*.elf
 del /s /q /f $(IntDir)\*.oelf
@@ -58,7 +59,7 @@ del /s /q /f $(IntDir)\*.oelf</NMakeCleanCommandLine>
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <NMakePreprocessorDefinitions>NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakePreprocessorDefinitions>ORBIS_TOOLBOX_DEBUG;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
@@ -67,28 +68,37 @@ del /s /q /f $(IntDir)\*.oelf</NMakeCleanCommandLine>
     <ClCompile Include="DebugTitleIdLabel.cpp" />
     <ClCompile Include="Detour.cpp" />
     <ClCompile Include="DevkitPanel.cpp" />
+    <ClCompile Include="Drawing.cpp" />
+    <ClCompile Include="Label.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Mono.cpp" />
     <ClCompile Include="MonoTest.cpp" />
+    <ClCompile Include="Panel.cpp" />
     <ClCompile Include="Patcher.cpp" />
     <ClCompile Include="Settings_Menu.cpp" />
     <ClCompile Include="UI_Utilities.cpp" />
     <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
     <ClInclude Include="Detour.h" />
+    <ClInclude Include="Label.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Mono.h" />
     <ClInclude Include="MonoTest.h" />
+    <ClInclude Include="Panel.h" />
     <ClInclude Include="Patcher.h" />
     <ClInclude Include="Settings_Menu.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Utilities.h" />
+    <ClInclude Include="Version.h" />
+    <ClInclude Include="Widget.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="build.bat" />
     <None Include="Embed.s" />
+    <None Include="Increment.bat" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="external_hdd.xml" />

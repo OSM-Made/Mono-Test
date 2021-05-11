@@ -24,13 +24,13 @@ void UI::DebugTitleIdLabel::AddTitleId(MonoObject* m_contentsGridList)
 
 	if (m_contentsGridList)
 	{
-		MonoObject* ActiveItems = Mono::Get_Property<MonoObject*>(Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "ListPanelBase"), "ActiveItems", m_contentsGridList);
+		MonoObject* ActiveItems = Mono::Get_Property<MonoObject*>(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "ListPanelBase", m_contentsGridList, "ActiveItems");
 
-		for (int i = 0; i < Mono::Get_Property<int>(ReadOnlyCollection, "Count", ActiveItems); i++)
+		for (int i = 0; i < Mono::Get_Property<int>(ReadOnlyCollection, ActiveItems, "Count"); i++)
 		{
 			MonoObject* Member = Mono::Invoke<MonoObject*>(Mono::mscorlib, ReadOnlyCollection, ActiveItems, "get_Item", i);
-			MonoObject* ListVisualizer = Mono::Get_Property<MonoObject*>(Mono::Get_Class(Mono::Vsh_Lx, "Sce.Vsh.Lx", "ListItem"), "ListVisualizer", Member);
-			MonoObject* m_decorator = Mono::Get_Field<MonoObject*>(Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Library", "ContentVisualizer"), ListVisualizer, "m_decorator");
+			MonoObject* ListVisualizer = Mono::Get_Property<MonoObject*>(Mono::Vsh_Lx, "Sce.Vsh.Lx", "ListItem", Member, "ListVisualizer");
+			MonoObject* m_decorator = Mono::Get_Field<MonoObject*>(Mono::App_exe, "Sce.Vsh.ShellUI.Library", "ContentVisualizer", ListVisualizer, "m_decorator");
 			CreateDebugTitleIdLabel(m_decorator);
 		}
 	}
@@ -42,14 +42,14 @@ void UI::DebugTitleIdLabel::RemoveTitleId(MonoObject* m_contentsGridList)
 
 	if (m_contentsGridList)
 	{
-		MonoObject* ActiveItems = Mono::Get_Property<MonoObject*>(Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "ListPanelBase"), "ActiveItems", m_contentsGridList);
+		MonoObject* ActiveItems = Mono::Get_Property<MonoObject*>(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "ListPanelBase", m_contentsGridList, "ActiveItems");
 
-		for (int i = 0; i < Mono::Get_Property<int>(ReadOnlyCollection, "Count", ActiveItems); i++)
+		for (int i = 0; i < Mono::Get_Property<int>(ReadOnlyCollection, ActiveItems, "Count"); i++)
 		{
 			MonoObject* Member = Mono::Invoke<MonoObject*>(Mono::mscorlib, ReadOnlyCollection, ActiveItems, "get_Item", i);
-			MonoObject* ListVisualizer = Mono::Get_Property<MonoObject*>(Mono::Get_Class(Mono::Vsh_Lx, "Sce.Vsh.Lx", "ListItem"), "ListVisualizer", Member);
-			MonoObject* m_decorator = Mono::Get_Field<MonoObject*>(Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Library", "ContentVisualizer"), ListVisualizer, "m_decorator");
-			MonoObject* m_iconImageBox = Mono::Get_Field<MonoObject*>(Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.Library", "ContentDecoratorBase"), m_decorator, "m_iconImageBox");
+			MonoObject* ListVisualizer = Mono::Get_Property<MonoObject*>(Mono::Vsh_Lx, "Sce.Vsh.Lx", "ListItem", Member, "ListVisualizer");
+			MonoObject* m_decorator = Mono::Get_Field<MonoObject*>(Mono::App_exe, "Sce.Vsh.ShellUI.Library", "ContentVisualizer", ListVisualizer, "m_decorator");
+			MonoObject* m_iconImageBox = Mono::Get_Field<MonoObject*>(Mono::App_exe, "Sce.Vsh.ShellUI.Library", "ContentDecoratorBase", m_decorator, "m_iconImageBox");
 
 			if (m_iconImageBox)
 			{
@@ -71,34 +71,6 @@ void UI::DebugTitleIdLabel::RemoveTitleId(MonoObject* m_contentsGridList)
 					if (strcmp(Instance->vtable->klass->name, "Label"))
 						continue;
 
-					MonoClass* Label = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Label");
-					MonoClass* LabelElement = Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "LabelElement");
-
-					MonoObject* element = Mono::Get_Field<MonoObject*>(Label, Instance, "element");
-					if (element)
-					{
-						struct UIFont_s
-						{
-							MonoString* fileName;
-							unsigned int aliasName;
-							int size;
-							unsigned int style;
-							unsigned int weight;
-							float pixelDensity;
-							bool isEnhanced;
-						};
-
-						//UIFont_s font = (Mono::Get_Field<uint64_t>(LabelElement, element, "font"));
-
-						klog("font: 0x%llX\n", Mono::Get_Field<MonoObject*>(LabelElement, element, "font"));
-						klog("font: 0x%llX\n", (Mono::Get_Field<MonoObject*>(LabelElement, element, "font") + 0x8));
-						klog("font: 0x%llX\n", (Mono::Get_Field<MonoObject*>(LabelElement, element, "font") + 0xC));
-						/*klog("font: 0x%llX\n", font.style);
-						klog("font: 0x%llX\n", font.weight);
-						klog("font: %f\n", font.pixelDensity);
-						klog("font: 0x%llX\n", font.isEnhanced);*/
-					}
-
 					Mono::Invoke<void>(Mono::App_exe, Mono::Get_Class(Mono::Highlevel_UI2, "Sce.PlayStation.HighLevel.UI2", "Widget"), Instance, "RemoveFromParent");
 				}
 			}
@@ -110,7 +82,7 @@ void UI::DebugTitleIdLabel::Show()
 {
 	MonoClass* ContentsAreaManager = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.TopMenu", "ContentsAreaManager");
 	MonoObject* m_scene = Mono::Get_Field<MonoObject*>(ContentsAreaManager, Mono::Get_Instance(ContentsAreaManager, "Instance"), "m_scene");
-	MonoArray* m_contentsGridList = Mono::Get_Field<MonoArray*>(Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.TopMenu", "ContentAreaScene"), m_scene, "m_contentsGridList");
+	MonoArray* m_contentsGridList = Mono::Get_Field<MonoArray*>(Mono::App_exe, "Sce.Vsh.ShellUI.TopMenu", "ContentAreaScene", m_scene, "m_contentsGridList");
 
 	AddTitleId(mono_array_get(m_contentsGridList, MonoObject*, 0));
 	AddTitleId(mono_array_get(m_contentsGridList, MonoObject*, 1));
@@ -122,7 +94,7 @@ void UI::DebugTitleIdLabel::Hide()
 {
 	MonoClass* ContentsAreaManager = Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.TopMenu", "ContentsAreaManager");
 	MonoObject* m_scene = Mono::Get_Field<MonoObject*>(ContentsAreaManager, Mono::Get_Instance(ContentsAreaManager, "Instance"), "m_scene");
-	MonoArray* m_contentsGridList = Mono::Get_Field<MonoArray*>(Mono::Get_Class(Mono::App_exe, "Sce.Vsh.ShellUI.TopMenu", "ContentAreaScene"), m_scene, "m_contentsGridList");
+	MonoArray* m_contentsGridList = Mono::Get_Field<MonoArray*>(Mono::App_exe, "Sce.Vsh.ShellUI.TopMenu", "ContentAreaScene", m_scene, "m_contentsGridList");
 
 	RemoveTitleId(mono_array_get(m_contentsGridList, MonoObject*, 0));
 	RemoveTitleId(mono_array_get(m_contentsGridList, MonoObject*, 1));

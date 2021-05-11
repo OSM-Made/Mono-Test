@@ -81,7 +81,7 @@ bool UI::DevkitPanel::GetState()
 	MonoObject* m_updatePanelTimer = Mono::Get_Field<MonoObject*>(AreaManager, AreaManager_Instance, "m_updatePanelTimer");
 
 	if (m_devKitPanel && m_updatePanelTimer)
-		return !Mono::Get_Property<bool>(FrameTask, "IsStopped", m_updatePanelTimer);
+		return !Mono::Get_Property<bool>(FrameTask, m_updatePanelTimer, "IsStopped");
 	else
 		return false;
 }

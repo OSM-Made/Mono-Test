@@ -79,10 +79,10 @@ MonoObject* NewElementData(const char* Id, const char* Title, const char* Title2
 	MonoObject* Instance = Mono::New_Object(ButtonElementData);
 	mono_runtime_object_init(Instance);
 
-	Mono::Set_Property(ElementData, "Id", Instance, Mono::New_String(Id));
-	Mono::Set_Property(ElementData, "Title", Instance, Mono::New_String(Title));
-	Mono::Set_Property(ElementData, "SecondTitle", Instance, Mono::New_String(Title2));
-	Mono::Set_Property(ElementData, "Icon", Instance, Mono::New_String(Icon));
+	Mono::Set_Property(ElementData, Instance, "Id", Mono::New_String(Id));
+	Mono::Set_Property(ElementData, Instance, "Title", Mono::New_String(Title));
+	Mono::Set_Property(ElementData, Instance, "SecondTitle", Mono::New_String(Title2));
+	Mono::Set_Property(ElementData, Instance, "Icon", Mono::New_String(Icon));
 
 	return Instance;
 }
@@ -98,19 +98,6 @@ MonoObject* NewUIColor(float R, float G, float B, float A)
 	//  Object first before calling the constructor.
 	MonoObject* Real_Instance = (MonoObject*)mono_object_unbox(UIColor_Instance);
 	Mono::Invoke<void>(Mono::Highlevel_UI2, UIColor, Real_Instance, ".ctor", R, G, B, A);
-
-	struct UIColor_s
-	{
-		float R, G, B, A;
-	};
-
-	UIColor_s* Colours = (UIColor_s*)Real_Instance;
-
-	klog("UIColor\n");
-	klog("R = %f\n", Colours->R);
-	klog("G = %f\n", Colours->G);
-	klog("B = %f\n", Colours->B);
-	klog("A = %f\n", Colours->A);
 
 	return Real_Instance;
 }
